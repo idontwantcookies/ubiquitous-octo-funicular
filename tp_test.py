@@ -110,8 +110,9 @@ def test_pollard_rho(n):
 
 
 @pytest.mark.parametrize("n,factors", [
-    [12, {2, 3}],
-    [717967279050961, {12657973, 56720557}],
+    [12, {2: 2, 3: 1}],
+    [717967279050961, {12657973: 1, 56720557: 1}],
+    [100, {2: 2, 5: 2}]
 ])
 def test_factors(n, factors):
     assert tp.factors(n) == factors

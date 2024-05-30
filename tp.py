@@ -1,8 +1,16 @@
-from math import  ceil, log10
+
 from random import randint
-from sympy import factorint
+from collections import Counter
+
 from sympy.ntheory import discrete_log
 
+
+def ilog10(n):
+	x = 0
+	while n > 10:
+		n //= 10
+		x += 1
+	return x
 
 def isqrt(n):
 	# integer square root using binary search. Time complexity: O(log(n))
@@ -106,7 +114,7 @@ def prime_miller_rabin(n:int, rep:int=None, primes:list[int]=[]):
 	if n == 2: return True
 	for p in primes:
 		if n % p == 0: return False
-	rep = rep or max(5, ceil(log10(n)))
+	rep = rep or max(5, ilog10(n) + 1)
 	k, q = pre_miller(n)
 	for i in range(rep):
 		b = randint(2, n - 1)
@@ -140,11 +148,19 @@ def totient(x:int, primes:list[int]=None):
 		if p > x: break
 	return out
 
-def remove_factor(n: int, p: int) -> int:
+def factor_out(n: int, p: int) -> int:
 	# Divides n by p until n is no longer divisible by p
 	while n % p == 0:
 		n //= p
 	return n
+
+def factor_out_count(n: int, p: int) -> int:
+	# Divides n by p until n is no longer divisible by p
+	count = 0
+	while n % p == 0:
+		n //= p
+		count += 1
+	return n, count
 
 def prime_factors(n: int) -> list[int]:
 	# Returns a list of all prime factors of n. Time complexity: O(n) worst-case (n prime)
@@ -152,12 +168,11 @@ def prime_factors(n: int) -> list[int]:
 	p = 3
 	if n % 2 == 0:
 		factors.append(2)
-		n = remove_factor(n, 2)
+		n = factor_out(n, 2)
 	while p <= isqrt(n):
 		if n % p == 0:
 			factors.append(p)
-			print(p, n)
-			n = remove_factor(n, p)
+			n = factor_out(n, p)
 		p += 2
 	if n != 1: factors.append(n)
 	return factors
@@ -226,18 +241,19 @@ def pollard_rho(n: int) -> int:
 				c = [randint(0, n - 1) for _ in range(3)]	# arbitrary coefficients
 				break
 
-def factors(n: int, primes:list[int]=[]) -> set[int]:
-	if n == 1: return {}
-	if prime_miller_rabin(n): return {n}
+def factors(n: int, primes:list[int]=[], count=1) -> Counter[int, int]:
+	if n == 1: return Counter()
+	if prime_miller_rabin(n): return Counter({n: count})
 	for p in primes:
 		if n % p == 0:
 			x = p
 			break
 	else:
 		x = pollard_rho(n)
-	print(f"Found a factor of n, x={x}")
-	n = remove_factor(n, x)
-	return factors(x).union(factors(n))
+	y, i = factor_out_count(n, x)
+	x_factors = factors(x, primes, count + i - 1)
+	y_factors = factors(y, primes, count)
+	return x_factors + y_factors
 
 # def pohlig_hellman(n: int, g: int, h:int, factors:dict[int, int]) -> int:
 # 	x = []
@@ -255,13 +271,12 @@ def factors(n: int, primes:list[int]=[]) -> set[int]:
 if __name__ == '__main__':
 	n = int(input()) | 1	# garantindo que seja ímpar
 	a = int(input())
-	rep = ceil(log10(n))
+	rep = ilog10(n) + 1
 	sieve = eratosthenes_sieve(1000)
 	while not prime_miller_rabin(n, rep, sieve):
 		n += 2
 	print("Menor primo maior que N:", n)
 	print("Repetições de Miller-Rabin usadas:", rep)
-	# factors = factorint(n - 1)
 	factors = factors(n - 1, sieve)
 	print(factors)
 	g = find_generator(n, factors.keys())
