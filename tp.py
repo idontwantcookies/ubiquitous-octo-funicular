@@ -4,6 +4,17 @@ from collections import Counter
 from sys import exit
 
 
+class Timer:
+    def __enter__(self):
+        self.start = time()
+    
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        self.stop = time()
+        t = self.stop - self.start
+        t = t * 1000
+        print(f"Tempo de execução: {t:.3f}ms.")
+        print()
+
 def ilog10(n:int) -> int:
     '''Retorna o logaritmo inteiro de n na base 10. Complexidade: O(log(n))
     Ex.: ilog10(1031) => 3'''
@@ -340,36 +351,20 @@ if __name__ == '__main__':
     rep = max(10, ilog10(n) + 1)
     sieve = eratosthenes_sieve(1000)
 
-    start = time()
-    while not prime_miller_rabin(n, sieve, rep):
-        n += 2
-    stop = time()
-    t = round((stop - start) * 1000)
-    print("Menor primo maior que N:", n)
-    print("Repetições de Miller-Rabin usadas:", rep)
-    print(f"Calculado em {t}ms.")
-    print()
+    with Timer():
+        while not prime_miller_rabin(n, sieve, rep):
+            n += 2
+        print("Menor primo maior que N:", n)
+        print("Repetições de Miller-Rabin usadas:", rep)
 
-    start = time()
-    f = factors(n - 1, sieve)
-    stop = time()
-    t = round((stop - start) * 1000)
-    print("Decomposição em primos:", f)
-    print(f"Calculado em {t}ms.")
-    print()
+    with Timer():
+        f = factors(n - 1, sieve)
+        print("Decomposição em primos:", f)
 
-    start = time()
-    g = find_generator(n, f.keys())
-    stop = time()
-    t = round((stop - start) * 1000)
-    print("Gerador: g=", g)
-    print(f"Calculado em {t}ms.")
-    print()
+    with Timer():
+        g = find_generator(n, f.keys())
+        print("Gerador: g=", g)
 
-    start = time()
-    x = pohlig_hellman(g, h, n, f)
-    stop = time()
-    t = round((stop - start) * 1000)
-    print("Log discreto de h na base g:", x)
-    print(f"Calculado em {t}ms.")
-    print()
+    with Timer():
+        x = pohlig_hellman(g, h, n, f)
+        print("Log discreto de h na base g:", x)
