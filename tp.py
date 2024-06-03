@@ -1,5 +1,7 @@
+from time import time
 from random import randint
 from collections import Counter
+from sys import exit
 
 
 def ilog10(n:int) -> int:
@@ -186,13 +188,13 @@ def factor_out(n: int, p: int) -> int:
         c += 1
     return n, c
 
-def find_generator(n:int, f:list[int], rep:int=None) -> int:
+def find_generator(n:int, f:list[int], timeout:int=15) -> int:
     '''Algoritmo probabilístico para achar um gerador g do grupo de inteiros
     x tais que gcd(x, totient(n)) == 1.
     '''
-    rep = rep or 1_000_000
+    start = time()
     phi = totient(n)
-    for _ in range(rep):
+    while time() - start < timeout:
         g = randint(2, phi)
         for x in f:
             e = (phi) // x
@@ -200,8 +202,7 @@ def find_generator(n:int, f:list[int], rep:int=None) -> int:
         else:
             return g
     else:
-        # TODO: implementar o elemento de maior ordem possível.
-        raise RuntimeError(f"Máximo de repetições excedido: não foi possível achar um gerador para n={n}.")
+        error(f"Tempo excedido: não foi possível encontrar um gerador. Limite de tempo: {timeout}")
 
 def poly(*coefficients: list[int]):
     '''
@@ -221,7 +222,7 @@ def poly(*coefficients: list[int]):
         return eval
     return p
 
-def pollard_rho_factor(n: int, rep:int=None) -> int:
+def pollard_rho_factor(n: int, timeout:int=15) -> int:
     '''Usa o algoritmo Pollard's rho para encontrar um fator de n.
     Retorna o valor encontrado.
     Exemplo: pollard_rho_factor(40) => 8
@@ -230,8 +231,8 @@ def pollard_rho_factor(n: int, rep:int=None) -> int:
     if prime_miller_rabin(n): raise ValueError(f"Called pollard_rho_factor() on n={n}, but it looks like n is prime.")
     x = 2
     c = [1, 0, 1]			# pseudo-random poly coefficients i.e. 1x²+0x+1
-    rep = rep or 1_000_000
-    for _ in range(rep):
+    start = time()
+    while time() - start < timeout:
         p = poly(*c)		# pseudo-random polynom
         T, H = x, x			# tortoise and the hare
         for _ in range(n):
@@ -245,7 +246,7 @@ def pollard_rho_factor(n: int, rep:int=None) -> int:
                 c = [randint(0, n - 1) for _ in range(3)]	# arbitrary coefficients
                 break
     else:
-        raise RuntimeError("Maximum repetitions exceeded trying to factor n.")
+        error(f"Tempo excedido: não foi possível encontrar um fator de n - 1. Tempo máximo: {timeout}")
 
 def factors(n: int, primes:list[int]=[], count=1) -> Counter[int, int]:
     '''
@@ -268,7 +269,7 @@ def factors(n: int, primes:list[int]=[], count=1) -> Counter[int, int]:
     y_factors = factors(y, primes, count)
     return x_factors + y_factors
 
-def baby_step_giant_step(g:int, h:int, n:int, order:int=None) -> int:
+def baby_step_giant_step(g:int, h:int, n:int, order:int=None, timeout:int=15) -> int:
     '''Implementação do algoritmo baby-step, giant-step para calcular o logaritmo
     discreto x tal que g^x = h mod n. Se a ordem de g for conhecida, pode ser passada
     como argumento opcional para acelerar o algoritmo.
@@ -280,11 +281,14 @@ def baby_step_giant_step(g:int, h:int, n:int, order:int=None) -> int:
     order = order or totient(n)
     m = isqrt(order) + 1
     powers = {}
+    start = time()
     for i in range(m):
+        if time() - start > timeout: error("Tempo excedido: não foi possível calcular o log discreto.")
         b = powmod(g, i, n)
         powers[b] = i
     c = powmod(g, m * (n - 2), n)
     for i in range(m):
+        if time() - start > timeout: error("Tempo excedido: não foi possível calcular o log discreto.")
         y = (h * powmod(c, i, n)) % n
         if y in powers:
             j = powers[y]
@@ -326,19 +330,46 @@ def pohlig_hellman(g: int, h:int, n:int, f:dict[int, int]=None) -> int:
         m.append(p**e)
     return congruence_system(r, m) % n
 
+def error(msg:str):
+    print(msg)
+    exit(1)
 
 if __name__ == '__main__':
     n = (int(input()) + 1) | 1  # garantindo que seja ímpar
     h = int(input())
     rep = max(10, ilog10(n) + 1)
     sieve = eratosthenes_sieve(1000)
+
+    start = time()
     while not prime_miller_rabin(n, sieve, rep):
         n += 2
+    stop = time()
+    t = round((stop - start) * 1000)
     print("Menor primo maior que N:", n)
     print("Repetições de Miller-Rabin usadas:", rep)
+    print(f"Calculado em {t}ms.")
+    print()
+
+    start = time()
     f = factors(n - 1, sieve)
+    stop = time()
+    t = round((stop - start) * 1000)
     print("Decomposição em primos:", f)
+    print(f"Calculado em {t}ms.")
+    print()
+
+    start = time()
     g = find_generator(n, f.keys())
+    stop = time()
+    t = round((stop - start) * 1000)
     print("Gerador: g=", g)
+    print(f"Calculado em {t}ms.")
+    print()
+
+    start = time()
     x = pohlig_hellman(g, h, n, f)
+    stop = time()
+    t = round((stop - start) * 1000)
     print("Log discreto de h na base g:", x)
+    print(f"Calculado em {t}ms.")
+    print()

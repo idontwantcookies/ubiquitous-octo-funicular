@@ -1,14 +1,7 @@
 from pprint import pp
 
-from tp import factors, powmod, gcd, prime_miller_rabin
+from tp import factors, powmod, gcd, totient
 
-
-def totient(n:int):
-    powers = factors(n)
-    phi = 1
-    for p, e in powers.items():
-        phi *= p**(e - 1) * (p - 1)
-    return phi
 
 def subgroup(b:int, n:int):
     phi = totient(n)
