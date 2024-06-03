@@ -1,8 +1,6 @@
 from random import randint
 from collections import Counter
 
-from sympy.ntheory import discrete_log
-
 
 def ilog10(n:int) -> int:
     '''Retorna o logaritmo inteiro de n na base 10. Complexidade: O(log(n))
