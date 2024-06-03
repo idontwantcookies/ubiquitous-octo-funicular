@@ -28,6 +28,7 @@ with open("test/primes.txt") as file:
     for line in file:
         primes.append([int(x) for x in line.split()])
 
+
 @pytest.mark.parametrize("n,r", [
     [1, 1],
     [2, 1],
@@ -43,6 +44,7 @@ with open("test/primes.txt") as file:
 def test_isqrt(n, r):
     assert tp.isqrt(n) == r
 
+
 @pytest.mark.parametrize("a,b,x,y,d", extgcd)
 def test_gcd_extended(a, b, x, y, d):
     assert tp.gcd_extended(a, b) == (d, x, y)
@@ -50,6 +52,15 @@ def test_gcd_extended(a, b, x, y, d):
 
 @pytest.mark.parametrize("b,e,n,x", fastexp)
 def test_exp_binaria(b, e, n, x):
+    assert tp.powmod(b, e, n) == x
+
+@pytest.mark.parametrize("b,e,n,x", [
+    [2, -1, 7, 4],
+    [2, -2, 7, 2],
+    [3, -1, 13, 9],
+    [3, -2, 13, 3]
+])
+def test_powmod_negative_exponent(b, e, n, x):
     assert tp.powmod(b, e, n) == x
 
 
@@ -63,11 +74,13 @@ def test_primes_miller_rabin(p, result):
     result = bool(result)
     assert tp.prime_miller_rabin(p) == result
 
+
 @pytest.mark.parametrize("n,result", [
     [2, True],
     [3, True],
     [4, False],
     [10, False],
+    [45, False],
     [101, True],
     [211, True],
     [21, False]
@@ -84,18 +97,32 @@ def test_find_generator(n):
         assert tp.powmod(g, i, n) != 1
 
 
-@pytest.mark.parametrize("g,x,a,n", bsgs)
-def test_baby_step_giant_step(g, x, a, n):
-    x = tp.baby_step_giant_step(a, g, n)
+@pytest.mark.parametrize("g,x,h,p", bsgs)
+def test_baby_step_giant_step(g, x, h, p):
+    x = tp.baby_step_giant_step(g, h, p)
     assert x != 0 and x is not None
-    assert g**x % n == a
+    assert g**x % p == h
 
 
-# @pytest.mark.parametrize("g,x,a,n", bsgs)
-# def test_pohlig_hellman_base(g, x, a, n):
-#     x = tp.pohlig_hellman_base(n, 1, g, a)
-#     assert x != 0 and x is not None
-#     assert g**x % n == a
+def test_congruence():
+    r = [1, 2, 3]
+    n = [5, 7, 11]
+    x = tp.congruence_system(r, n)
+    for i in range(3):
+        assert x % n[i] == r[i]
+
+
+def test_pohlig_hellman():
+    n = 101
+    f = {2: 2, 5: 2}
+    g, h = 15, 100
+    assert tp.pohlig_hellman(g, h, n, f) == 50
+
+
+def test_pohlig_hellman_prime_power():
+    g, h, p, e, order = 27, 40, 2, 3, 41
+    assert tp.pohlig_hellman_prime_power_order(g, h, p, e, order) == 4
+
 
 def test_poly():
     p = tp.poly(1, 2, 3)
@@ -104,7 +131,7 @@ def test_poly():
 
 @pytest.mark.parametrize('n', [12, 850903, 717967279050961])
 def test_pollard_rho(n):
-    x = tp.pollard_rho(n)
+    x = tp.pollard_rho_factor(n)
     y = n // x
     assert x * y == n
 
@@ -116,3 +143,10 @@ def test_pollard_rho(n):
 ])
 def test_factors(n, factors):
     assert tp.factors(n) == factors
+
+
+def test_congruence_system():
+    a = [2, 3, 2]
+    n = [3, 5, 7]
+    x = tp.congruence_system(a, n)
+    assert x == 23
