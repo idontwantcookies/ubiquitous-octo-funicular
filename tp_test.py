@@ -150,3 +150,15 @@ def test_congruence_system():
     n = [3, 5, 7]
     x = tp.congruence_system(a, n)
     assert x == 23
+
+
+@pytest.mark.parametrize("g,n,phi,f,o",[
+    [2, 7, 6, {2:1, 3:1}, 3],
+    [3, 7, 6, {2:1, 3:1}, 6],
+    [3, 121, 110, {11:1, 2:1, 5:1}, 5],
+    [5, 12, 4, {2:2}, 2],
+    [13, 40, 12, {2:2, 3:1}, 4]
+])
+def test_order(g, n, phi, f, o):
+    assert tp.order(g, n, phi, f) == o
+

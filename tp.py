@@ -3,6 +3,8 @@ from random import randint
 from collections import Counter
 from sys import exit
 
+from sympy import discrete_log
+
 
 class Timer:
     def __enter__(self):
@@ -14,6 +16,10 @@ class Timer:
         t = t * 1000
         print(f"Tempo de execução: {t:.3f}ms.")
         print()
+
+def error(msg:str):
+    print(msg)
+    exit(1)
 
 def ilog10(n:int) -> int:
     '''Retorna o logaritmo inteiro de n na base 10. Complexidade: O(log(n))
@@ -160,7 +166,7 @@ def prime_miller_rabin(n:int, primes:list[int]=[], rep:int=None, ):
         if not miller_test(n, b, k, q): return False
     return True
 
-def eratosthenes_sieve(n) -> list[int]:
+def eratosthenes_sieve(n: int) -> list[int]:
     '''
     Usa o crivo de Eratóstenes para retornar uma lista com 
     todos os primos no intervalo fechado [2,n].
@@ -189,6 +195,16 @@ def totient(x:int, f:dict[int,int]=None) -> int:
     for p in f.keys():
         phi = phi * (p - 1) // p
     return phi
+
+def order(g:int, n:int, phi:int, f:dict[int, int]) -> int:
+    '''Calcula a ordem de g mod n, conhecendo phi = totient(n) e a fatorização
+    f de phi, phi = p1^e1*p2^e2*p3^e3..p_k^e_k. Complexidade: O(k * e_t), onde 
+    e_t é o maior expoente da decomposição de phi em primos.'''
+    o = phi
+    for p in f.keys():
+        while o % p == 0 and powmod(g, o // p, n) == 1:
+            o //= p
+    return o
 
 def factor_out(n: int, p: int) -> int:
     ''' Divides n by p until n is no longer divisible by p. Returns x, c, where x is n with  p 
@@ -340,10 +356,6 @@ def pohlig_hellman(g: int, h:int, n:int, f:dict[int, int]=None) -> int:
         r.append(r_i)
         m.append(p**e)
     return congruence_system(r, m) % n
-
-def error(msg:str):
-    print(msg)
-    exit(1)
 
 if __name__ == '__main__':
     n = (int(input()) + 1) | 1  # garantindo que seja ímpar

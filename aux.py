@@ -8,8 +8,9 @@ def subgroup(b:int, n:int):
     powers = []
     pi = 1
     for _ in range(1, phi + 1):
-        pi *= b
-        powers.append(pi % n)
+        pi = pi * b % n
+        powers.append(pi)
+        if pi == 1: break
     return powers
 
 def is_generator(g, n):
