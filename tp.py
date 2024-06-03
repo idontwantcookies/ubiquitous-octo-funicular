@@ -218,7 +218,9 @@ def factor_out(n: int, p: int) -> int:
 def find_generator(n:int, phi:int, f:dict[int,int], timeout:int=15) -> int:
     '''Algoritmo probabilístico para achar um gerador g do grupo de inteiros
     x tais que gcd(x, totient(n)) == 1.
-    # TODO: complexidade de tempo
+    A probabilidade q de encontrar um gerador é q = phi / n. Logo, a complexidade
+    amortizada é da ordem de O(q * n * r), onde r é o número de fatores primos
+    distintos. Logo, a complexidade é O(phi * r).
     '''
     start = time()
     h = 1
