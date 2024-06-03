@@ -91,15 +91,16 @@ def test_miller_rabin_small(n, result):
 
 @pytest.mark.parametrize("n", [11, 13, 17, 19, 101])
 def test_find_generator(n):
-    factors = sympy.factorint(n - 1)
-    g = tp.find_generator(n, factors)
+    phi = n - 1
+    f = sympy.factorint(phi)
+    g = tp.find_generator(n, phi, f)
     for i in range(2, n - 1):
         assert tp.powmod(g, i, n) != 1
 
 
 @pytest.mark.parametrize("g,x,h,p", bsgs)
 def test_baby_step_giant_step(g, x, h, p):
-    x = tp.baby_step_giant_step(g, h, p)
+    x = tp.baby_step_giant_step(g, h, p, p - 1)
     assert x != 0 and x is not None
     assert g**x % p == h
 

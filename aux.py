@@ -3,8 +3,7 @@ from pprint import pp
 from tp import factors, powmod, gcd, totient
 
 
-def subgroup(b:int, n:int):
-    phi = totient(n)
+def subgroup(b:int, n:int, phi:int):
     powers = []
     pi = 1
     for _ in range(1, phi + 1):
@@ -13,8 +12,7 @@ def subgroup(b:int, n:int):
         if pi == 1: break
     return powers
 
-def is_generator(g, n):
-    phi = totient(n)
+def is_generator(g, n, phi):
     if gcd(g, n) != 1: return False
     for p in factors(phi).keys():
         k = (phi) // p
@@ -25,10 +23,11 @@ def is_generator(g, n):
 for p in [3, 5, 7, 11, 13, 17, 23]:
     generators = []
     for x in range(2, p):
-        if is_generator(x, p):
+        if is_generator(x, p, p - 1):
             generators.append(x)
     for e in range(2, 6):
         for g in generators:
-            if not is_generator(g, p**e):
+            phi = p**(e - 1) * (p - 1)
+            if not is_generator(g, p**e, phi):
                 print(f"{g} generates {p}, but does not generate {p}^{e}.")
                 print(subgroup(g, p**e))

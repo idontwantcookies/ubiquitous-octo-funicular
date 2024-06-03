@@ -184,13 +184,12 @@ def eratosthenes_sieve(n: int) -> list[int]:
         if prime: out.append(i)
     return out
 
-def totient(x:int, f:dict[int,int]=None) -> int:
+def totient(x:int, f:dict[int,int]) -> int:
     '''
     Calcula o totiente de x, phi, tal que a^phi = 1 mod x para qualquer a.
-    Exemplo: totient(40) => 16
+    É preciso conhecer a fatoração de x.
+    Exemplo: totient(40, {2:3,5:1}) => 16
     '''
-    if prime_miller_rabin(x): return x - 1
-    if f is None: f = factors(x)
     phi = x
     for p in f.keys():
         phi = phi * (p - 1) // p
@@ -200,6 +199,7 @@ def order(g:int, n:int, phi:int, f:dict[int, int]) -> int:
     '''Calcula a ordem de g mod n, conhecendo phi = totient(n) e a fatorização
     f de phi, phi = p1^e1*p2^e2*p3^e3..p_k^e_k. Complexidade: O(k * e_t), onde 
     e_t é o maior expoente da decomposição de phi em primos.'''
+    if g == 1: return 1
     o = phi
     for p in f.keys():
         while o % p == 0 and powmod(g, o // p, n) == 1:
@@ -215,20 +215,25 @@ def factor_out(n: int, p: int) -> int:
         c += 1
     return n, c
 
-def find_generator(n:int, f:list[int], timeout:int=15) -> int:
+def find_generator(n:int, phi:int, f:dict[int,int], timeout:int=15) -> int:
     '''Algoritmo probabilístico para achar um gerador g do grupo de inteiros
     x tais que gcd(x, totient(n)) == 1.
+    # TODO: complexidade de tempo
     '''
     start = time()
-    phi = totient(n)
+    h = 1
     while time() - start < timeout:
-        g = randint(2, phi)
-        for x in f:
-            e = (phi) // x
-            if powmod(g, e, n) == 1: break
+        g = randint(2, phi - 1)
+        for p, e in f.items():
+            d = phi // p
+            if powmod(g, d, n) == 1:
+                h = h * powmod(g, phi // p**e, n) % n
+                break
         else:
             return g
     else:
+        print(f"Elemento de maior ordem encontrado: g'={h}")
+        print(f"Ordem de g':", order(h, n, phi, f))
         error(f"Tempo excedido: não foi possível encontrar um gerador. Limite de tempo: {timeout}")
 
 def poly(*coefficients: list[int]):
@@ -296,16 +301,15 @@ def factors(n: int, primes:list[int]=[], count=1) -> Counter[int, int]:
     y_factors = factors(y, primes, count)
     return x_factors + y_factors
 
-def baby_step_giant_step(g:int, h:int, n:int, order:int=None, timeout:int=15) -> int:
+def baby_step_giant_step(g:int, h:int, n:int, order:int, timeout:int=15) -> int:
     '''Implementação do algoritmo baby-step, giant-step para calcular o logaritmo
     discreto x tal que g^x = h mod n. Se a ordem de g for conhecida, pode ser passada
     como argumento opcional para acelerar o algoritmo.
     Se h ∉ <g>, uma exceção é gerada.
     Complexidade: O(sqrt(n)).
     Exemplos:
-    baby_step_giant_step(7, 2, 41) => 14
-    baby_step_giant_step(2, 7, 9) => 4'''
-    order = order or totient(n)
+    baby_step_giant_step(7, 2, 41, 40) => 14
+    baby_step_giant_step(2, 7, 9, 6) => 4'''
     m = isqrt(order) + 1
     powers = {}
     start = time()
@@ -341,12 +345,11 @@ def pohlig_hellman_prime_power_order(g:int, h:int, p:int, e:int, n:int) -> int:
         x += d_k * p**k
     return x
 
-def pohlig_hellman(g: int, h:int, n:int, f:dict[int, int]=None) -> int:
+def pohlig_hellman(g: int, h:int, n:int, f:dict[int, int]) -> int:
     '''Resolve o problema do logaritmo discreto g^x = h mod n, usando o 
     método de Pohlig-Hellman. Dada a decomposição em primos p1^e1..pr^er,
     a complexidade desse algoritmo é O(r * sqrt(p)), onde p é o maior fator 
     primo de n - 1. Retorna x.'''
-    f = f or factors(totient(n))
     r, m = [], []
     for p, e in f.items():
         e_i = n // p**e
@@ -369,12 +372,14 @@ if __name__ == '__main__':
         print("Menor primo maior que N:", n)
         print("Repetições de Miller-Rabin usadas:", rep)
 
+    phi = n - 1
+
     with Timer():
-        f = factors(n - 1, sieve)
+        f = factors(phi, sieve)
         print("Decomposição em primos:", f)
 
     with Timer():
-        g = find_generator(n, f.keys())
+        g = find_generator(n, phi, f)
         print("Gerador: g=", g)
 
     with Timer():
