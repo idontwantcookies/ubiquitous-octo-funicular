@@ -1,8 +1,19 @@
-# Problema do logaritmo discreto
+# Problema do logaritmo discreto - TP1 de Álgebra A
+## Autores
+Felipe Ribas Muniz
+Chrystian
+Sanny
+João
 
 ## Desenvolvimento do trabalho
 
-<!-- TODO -->
+O trabalho foi desenvolvido python 3.10. Para gerar os casos de teste do código, usamos a biblioteca GMP de C++ para determinar primos grandes, potências mod n, inversos modulares e testes de primalidade. O arquivo generator.cpp contém o código fonte responsável pelos casos de teste gerados, que foram então usados em python para testar o código do aplicativo de fato.
+
+Diversos casos de teste foram criados no arquivo `tp_test.py` em casos onde sabíamos a solução, geralmente para números menores do que aqueles gerados pelo GMP e em que foi possível fazer os cálculos na mão. A base do trabalho foi feita sobre o algoritmo estendido de Euclides para calcular o MDC e sobre o algoritmo de exponenciação binária. Com eles, somos capazes de gerar grupos em Zp, e de calcular inversos modulares. Além disso, o teste de primalidade de Miller-Rabin foi usado para encontrar um p grande.
+
+Uma vez que essas 3 bases foram construídas, temos um p e um grupo Zp, onde todo elemento tem inverso multiplicativo. A partir dessa premissa, trabalhamos com o totiente de p, a fatorização do totiente em potências de primos usando o algoritmo Pohlard's rho, buscamos um gerador g para Zp, e, por fim, usamos Baby-Step, Giant-Step, combinado com Pohlig-Hellman, para calcular o logaritmo discreto de qualquer elemento h ∈ Zp na base g.
+
+Os testes foram usados com frequência para refatorar o código e realizar mudanças necessárias sempre que algum erro de lógica era encontrado, ou quando era necessário aprimorar a eficiência de um algoritmo. Eles podem não ser exaustivos; além disso, como alguns desses algoritmos são probabilísticos, os testes são instáveis, embora eles dificilmente falhem duas vezes consecutivas.
 
 ## Módulos
 
@@ -20,7 +31,32 @@ O programa é constituído dos seguintes módulos:
     - um gerador g de Zn, ou um elemento com ordem alta;
     - o logaritmo discreto de h na base g mod n.
 
-## Formato de entrada e como utilizar o programa
+## Como utilizar o programa
+
+É necessário ter o python 3.10 instalado localmente. Para rodar os testes, também é preciso ter a biblioteca pytest instalada.
+
+
+Para executar o programa, entre na pasta-raiz do projeto e rode o comando
+
+```bash
+cd {nome-do-diretorio}
+python main.py
+```
+
+Para checar se tudo está nos conformes, basta trocar para o diretório-raiz do projeto e executar o pytest.
+
+```bash
+cd {nome-do-diretorio}
+pytest
+```
+Para alimentar as informações de entrada para o aplicativo, é possível usar a pipe do bash para passar os argumentos para o programa.
+
+```bash
+cat test/in3.txt | python main.py
+```
+
+## Formato de entrada
+
 A entrada deve ser dada por dois números inteiros, N e a, separados por _whitespace_. Pode-se rodar o programa, e depois fornecer os inteiros sequencialmente, ou passar um arquivo contendo os 2 inteiros separados por _whitespace_, usando `cat [nome do arquivo].txt | python main.py`, por exemplo. A pasta `test/` possui 3 exemplos de entrada formatados em arquivos válidos: `in1.txt`, `in2.txt` e `in3.txt`.
 
 Também é possível invocar o programa diretamente e inserir os valores manualmente, através de da linha de comando, com o comando `python main.py`.
@@ -77,4 +113,10 @@ As 4 funções principais executadas são:
 
 ## Listagem do programa-fonte
 
-<!-- TODO -->
+Os arquivos do código-fonte são:
+
+- base.py, discrete_log.py, factorization.py, mod.py, primality.py, util.py: módulos essenciais da aplicação.
+- main.py: código principal da aplicação.
+- tp_test.py: casos de teste dos módulos essenciais.
+- generator.cpp: código-fonte para gerar primos grandes para os casos de teste
+- test/*.txt: listas de testes usadas por tp_test.py e para os testes manuais.
