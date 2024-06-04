@@ -1,13 +1,15 @@
 # Problema do logaritmo discreto - TP1 de Álgebra A
+
 ## Autores
+
+Chrystian Paulo Ferreira de Melo
 Felipe Ribas Muniz
-Chrystian
-Sanny
-João
+João Marcos Rezende
+Sanny Cristiane Moreira de Sales
 
 ## Desenvolvimento do trabalho
 
-O trabalho foi desenvolvido python 3.10. Para gerar os casos de teste do código, usamos a biblioteca GMP de C++ para determinar primos grandes, potências mod n, inversos modulares e testes de primalidade. O arquivo generator.cpp contém o código fonte responsável pelos casos de teste gerados, que foram então usados em python para testar o código do aplicativo de fato.
+O trabalho foi desenvolvido em python 3.10. Para gerar os casos de teste do código, usamos a biblioteca GMP de C++ para determinar primos grandes, potências mod n, inversos modulares e testes de primalidade. O arquivo generator.cpp contém o código fonte responsável pelos casos de teste gerados, que foram então usados em python para testar o código do aplicativo de fato.
 
 Diversos casos de teste foram criados no arquivo `tp_test.py` em casos onde sabíamos a solução, geralmente para números menores do que aqueles gerados pelo GMP e em que foi possível fazer os cálculos na mão. A base do trabalho foi feita sobre o algoritmo estendido de Euclides para calcular o MDC e sobre o algoritmo de exponenciação binária. Com eles, somos capazes de gerar grupos em Zp, e de calcular inversos modulares. Além disso, o teste de primalidade de Miller-Rabin foi usado para encontrar um p grande.
 
@@ -105,10 +107,8 @@ Tempo de execução: 0.099ms.
 As 4 funções principais executadas são: 
 - `prime_miller_rabin()`, que tem complexidade O(rep * log²(n)). Como adotamos rep = log(n), a complexidade total é O(log³(n));
 - `factors()`, de complexidade O(log(n) * sqrt(p)), onde p é o maior fator primo de n - 1;
-- `find_generator()`, de complexidade O(#########) asdfdas
-- `pohlig_hellman()`, de complexidade O(r * sqrt(p)).
-
-<!-- TODO: Complexidade de find_generator() -->
+- `find_generator()`, de complexidade O(log²(p))
+- `pohlig_hellman()`, de complexidade O(r * sqrt(p)), onde r é o número de fatores primos de n - 1 e p é o maior fator primo de n - 1.
 
 
 ## Listagem do programa-fonte
