@@ -6,22 +6,24 @@ from mod import find_generator
 from discrete_log import pohlig_hellman
 
 
-n = (int(input()) + 1) | 1  # garantindo que seja ímpar
-h = int(input())
-rep = max(10, ilog10(n) + 1)
+n = (int(input("Insira o valor de N: ")) + 1) | 1  # garantindo que seja ímpar
+h = int(input("Insira o valor de h: "))
+print()
+
 sieve = eratosthenes_sieve(1000)
 
 with Timer():
+    rep = max(10, ilog10(n) + 1)
     while not prime_miller_rabin(n, sieve, rep):
         n += 2
-    print("Menor primo maior que N:", n)
+    print("Menor primo n maior que N:", n)
     print("Repetições de Miller-Rabin usadas:", rep)
 
 phi = n - 1
 
 with Timer():
     f = factors(phi, sieve)
-    print("Decomposição em primos:", f)
+    print("Decomposição de n - 1 em primos:", f)
 
 with Timer():
     g = find_generator(n, phi, f)

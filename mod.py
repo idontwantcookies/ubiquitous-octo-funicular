@@ -1,7 +1,7 @@
 from time import time
 from random import randint
 
-from base import prod, gcd_extended
+from base import prod, gcd_extended, gcd
 from util import error
 
 
@@ -57,12 +57,26 @@ def order(g:int, n:int, phi:int, f:dict[int, int]) -> int:
             o //= p
     return o
 
+def subgroup(b:int, n:int, phi:int) -> list[int]:
+    powers = []
+    pi = 1
+    for _ in range(1, phi + 1):
+        pi = pi * b % n
+        powers.append(pi)
+        if pi == 1: break
+    return powers
+
+def is_generator(g:int, n:int, phi:int, f:dict[int, int]):
+    if gcd(g, n) != 1: return False
+    for p in f.keys():
+        k = (phi) // p
+        if powmod(g, k, n) == 1: return False
+    return True
+
 def find_generator(n:int, phi:int, f:dict[int,int], timeout:int=15) -> int:
     '''Algoritmo probabilístico para achar um gerador g do grupo de inteiros
     x tais que gcd(x, totient(n)) == 1.
-    A probabilidade q de encontrar um gerador é q = phi / n. Logo, a complexidade
-    amortizada é da ordem de O(q * n * r), onde r é o número de fatores primos
-    distintos. Logo, a complexidade é O(phi * r).
+    Complexidade: O(totient(n - 1) * r * log(n))
     '''
     start = time()
     h = 1
