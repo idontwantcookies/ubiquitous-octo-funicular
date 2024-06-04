@@ -1,6 +1,7 @@
 from pprint import pp
 
-from tp import factors, powmod, gcd, totient
+from factorization import factors, gcd
+from mod import powmod
 
 
 def subgroup(b:int, n:int, phi:int):
@@ -18,16 +19,3 @@ def is_generator(g, n, phi):
         k = (phi) // p
         if powmod(g, k, n) == 1: return False
     return True
-
-
-for p in [3, 5, 7, 11, 13, 17, 23]:
-    generators = []
-    for x in range(2, p):
-        if is_generator(x, p, p - 1):
-            generators.append(x)
-    for e in range(2, 6):
-        for g in generators:
-            phi = p**(e - 1) * (p - 1)
-            if not is_generator(g, p**e, phi):
-                print(f"{g} generates {p}, but does not generate {p}^{e}.")
-                print(subgroup(g, p**e))
