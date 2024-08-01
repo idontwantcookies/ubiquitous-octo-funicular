@@ -1,7 +1,7 @@
 from random import randint
 
 from primality import prime_miller_rabin
-from mod import invmod, powmod, gcd
+from modular_arithmetic import invmod, powmod, gcd
 
 
 def random_prime(bits:int=1024, max_attempts:int=1000):

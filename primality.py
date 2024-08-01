@@ -1,7 +1,7 @@
 from random import randint
 
 from base import isqrt, gcd, ilog10, oddify
-from mod import powmod, is_square, msqrt
+from modular_arithmetic import powmod
 
 
 def miller_test(n:int, b:int, k: int, q: int):

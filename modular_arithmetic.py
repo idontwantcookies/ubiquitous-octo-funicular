@@ -58,17 +58,22 @@ def order(g:int, n:int, phi:int, f:dict[int, int]) -> int:
     return o
 
 def subgroup(b:int, n:int, phi:int) -> list[int]:
+    '''Gera o subgrupo de potências de b mod n, até phi, onde phi é o totiente de n.
+    Retorna uma lista de tamanho phi.'''
     powers = []
     pi = 1
-    for _ in range(1, phi + 1):
+    for _ in range(phi):
         pi = pi * b % n
         powers.append(pi)
         if pi == 1: break
     return powers
 
-def is_generator(g:int, n:int, phi:int, f:dict[int, int]):
+def is_generator(g:int, n:int, phi:int, factors:dict[int, int]):
+    '''Retorna True caso g gere o conjunto Zn, de tamanho phi, ou False, caso
+    contrário. É preciso passar os fatores de n e suas respectivas potências
+    em formato de dicionário.'''
     if gcd(g, n) != 1: return False
-    for p in f.keys():
+    for p in factors.keys():
         k = (phi) // p
         if powmod(g, k, n) == 1: return False
     return True
@@ -84,7 +89,7 @@ def find_non_square(p: int) -> int:
         if not is_square(i, p): return i
 
 def msqrt(a: int, p:int,  d: int) -> int:
-    '''Calcula a raiz quadrada modular de a mod p, onde p é primo e p > 2.
+    '''Calcula uma raiz quadrada modular de a mod p, onde p é primo e p > 2.
     d é um inteiro qualquer que não é resíduo quadrático.'''
     m = 0
     s, t = oddify(p - 1)
@@ -98,8 +103,7 @@ def msqrt(a: int, p:int,  d: int) -> int:
 def find_generator(n:int, phi:int, f:dict[int,int], timeout:int=15) -> int:
     '''Algoritmo probabilístico para achar um gerador g do grupo de inteiros
     x tais que gcd(x, totient(n)) == 1.
-    Complexidade: O(totient(n - 1) * r * log(n))
-    '''
+    Complexidade: O(totient(n - 1) * r * log(n))'''
     start = time()
     h = 1
     while time() - start < timeout:

@@ -1,10 +1,9 @@
-from sys import exit
 from time import time
 
 class Timer:
     def __enter__(self):
         self.start = time()
-    
+
     def __exit__(self, exception_type, exception_value, exception_traceback):
         self.stop = time()
         t = self.stop - self.start

@@ -1,7 +1,7 @@
 from time import time
 
 from base import isqrt
-from mod import powmod, congruence_system
+from modular_arithmetic import powmod, congruence_system
 from util import error
 
 

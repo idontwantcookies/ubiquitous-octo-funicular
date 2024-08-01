@@ -2,10 +2,10 @@ from collections import Counter
 from time import time
 from random import randint
 
-from base import poly, gcd, isqrt
+from base import poly, gcd, isqrt, ilog10
 from primality import prime_miller_rabin
 from util import error
-from mod import is_square, find_non_square, msqrt
+from modular_arithmetic import is_square, find_non_square, msqrt
 
 
 def totient(x:int, f:dict[int,int]) -> int:
@@ -75,7 +75,9 @@ def pollard_rho_prime_power_decomposition(n: int, primes:list[int]=[], count=1) 
     y_factors = pollard_rho_prime_power_decomposition(y, primes, count)
     return x_factors + y_factors
 
-def crivo_quadratico(n: int, primes: list[int]):
+def quadratic_sieve(n: int, primes: list[int]):
+    digits = ilog10(n)
+    
     P = [(-1,0), (2,1)]
     L = primes[-1]
     for p in primes[2:]:

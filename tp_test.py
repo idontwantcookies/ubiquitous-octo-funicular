@@ -2,9 +2,9 @@ import pytest
 import sympy
 
 from base import isqrt, gcd_extended, poly, oddify
-from mod import powmod, find_generator, congruence_system, order, invmod, is_square, find_non_square, msqrt
+from modular_arithmetic import powmod, find_generator, congruence_system, order, invmod, is_square, find_non_square, msqrt, subgroup, is_generator
 from primality import prime_miller_rabin, eratosthenes_sieve
-from factorization import pollard_rho_factor, pollard_rho_prime_power_decomposition
+from factorization import pollard_rho_factor, pollard_rho_prime_power_decomposition, totient
 from discrete_log import baby_step_giant_step, pohlig_hellman, pohlig_hellman_prime_power_order
 
 
@@ -150,6 +150,12 @@ def test_baby_step_giant_step(g, x, h, p):
     assert x != 0 and x is not None
     assert g**x % p == h
 
+@pytest.mark.parametrize("x,factors,phi", [
+    [48, {2:4, 3:1}, 16],
+    [11, {11:1}, 10]
+])
+def test_totient(x, factors, phi):
+    assert totient(x, factors) == phi
 
 def test_congruence():
     r = [1, 2, 3]
@@ -158,6 +164,12 @@ def test_congruence():
     for i in range(3):
         assert x % n[i] == r[i]
 
+@pytest.mark.parametrize("b,n,phi,G", [
+    [2, 5, 4, [2, 4, 3, 1]],
+    [4, 5, 4, [4, 1]]
+])
+def test_subgroup(b, n, phi, G):
+    assert subgroup(b, n, phi) == G
 
 def test_pohlig_hellman():
     n = 101
@@ -198,6 +210,8 @@ def test_congruence_system():
     x = congruence_system(a, n)
     assert x == 23
 
+def test_is_generator():
+    assert is_generator(4, 5, 4, {5:1}) == False
 
 @pytest.mark.parametrize("g,n,phi,f,o",[
     [2, 7, 6, {2:1, 3:1}, 3],

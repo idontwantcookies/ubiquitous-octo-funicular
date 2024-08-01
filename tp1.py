@@ -2,7 +2,7 @@ from base import ilog10
 from util import Timer
 from factorization import pollard_rho_prime_power_decomposition
 from primality import eratosthenes_sieve, prime_miller_rabin
-from mod import find_generator
+from modular_arithmetic import find_generator
 from discrete_log import pohlig_hellman
 
 

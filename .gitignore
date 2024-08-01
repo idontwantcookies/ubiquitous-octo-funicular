@@ -37,3 +37,7 @@
 # Python pre-compiled
 __pycache__/
 .pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/

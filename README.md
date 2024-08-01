@@ -23,11 +23,11 @@ O programa é constituído dos seguintes módulos:
 
 - `base`: Possui funções aritméticas simples, para o cálculo de raiz quadrada, logaritmo na base 10 e MDC, por exemplo.
 - `util`: funções úteis para medir tempo e para sair do programa em caso de erro / timeout.
-- `mod`: aqui situam-se funções fundamentais relativas à aritmética modular, como inverso modular, potenciação modular, subgrupo, etc. Além disso, aqui se encontra a função `find_generator` usada pelo programa na segunda etapa do algoritmo. O algoritmo estendido de Euclides (do módulo `base`) é usado com frequência nesse módulo.
+- `modular_arithmetic`: aqui situam-se funções fundamentais relativas à aritmética modular, como inverso modular, potenciação modular, subgrupo, etc. Além disso, aqui se encontra a função `find_generator` usada pelo programa na segunda etapa do algoritmo. O algoritmo estendido de Euclides (do módulo `base`) é usado com frequência nesse módulo.
 - `primality`: funções relacionadas a testes de primalidade, incluindo o teste de Miller-Rabin e o crivo de Eratóstenes. O teste de Miller-Rabin usa o módulo `base` para calcular log na base 10, e o crivo de Eratóstenes usa o mesmo módulo para calcular a raiz quadrada inteira.
 - `factorization`: como o próprio nome já diz, aqui se encontram as funções responsáveis por fatorar um número inteiro, incluindo a função totiente. A fatoração de n - 1, onde n é o primo encontrado na primeira etapa, é utilizada em diversos algoritmos subsequentes para acelerar os cálculos. A fatorização usa o teste de primalidade Miller-Rabin para checar se o número foi completamente fatorado.
-- `discrete_log`: algoritmos baby-step, giant-step e Pohlig-Hellman, usados para resolver o problema do logaritmo discreto na terceira etapa do programa. O cálculo do logaritmo discreto depende da fatoração feita pelo módulo `factorization`, além das funções de potenciação modular e a solução de congruências pelo Teorema Chinês do Resto, no módulo `mod`.
-- `main`: o script principal que recebe como entrada (N, h) para encontrar:
+- `discrete_log`: algoritmos baby-step, giant-step e Pohlig-Hellman, usados para resolver o problema do logaritmo discreto na terceira etapa do programa. O cálculo do logaritmo discreto depende da fatoração feita pelo módulo `factorization`, além das funções de potenciação modular e a solução de congruências pelo Teorema Chinês do Resto, no módulo `modular_arithmetic`.
+- `tp1`: o script principal que recebe como entrada (N, h) para encontrar:
     - o menor n primo tal que n > N;
     - a fatoração de n - 1;
     - um gerador g de Zn, ou um elemento com ordem alta;
@@ -42,7 +42,7 @@ Para executar o programa, entre na pasta-raiz do projeto e rode o comando
 
 ```bash
 cd {nome-do-diretorio}
-python main.py
+python tp1.py
 ```
 
 Para checar se tudo está nos conformes, basta trocar para o diretório-raiz do projeto e executar o pytest.
@@ -54,14 +54,14 @@ pytest
 Para alimentar as informações de entrada para o aplicativo, é possível usar a pipe do bash para passar os argumentos para o programa.
 
 ```bash
-cat test/in3.txt | python main.py
+cat test/in3.txt | python tp1.py
 ```
 
 ## Formato de entrada
 
-A entrada deve ser dada por dois números inteiros, N e a, separados por _whitespace_. Pode-se rodar o programa, e depois fornecer os inteiros sequencialmente, ou passar um arquivo contendo os 2 inteiros separados por _whitespace_, usando `cat [nome do arquivo].txt | python main.py`, por exemplo. A pasta `test/` possui 3 exemplos de entrada formatados em arquivos válidos: `in1.txt`, `in2.txt` e `in3.txt`.
+A entrada deve ser dada por dois números inteiros, N e a, separados por _whitespace_. Pode-se rodar o programa, e depois fornecer os inteiros sequencialmente, ou passar um arquivo contendo os 2 inteiros separados por _whitespace_, usando `cat [nome do arquivo].txt | python tp1.py`, por exemplo. A pasta `test/` possui 3 exemplos de entrada formatados em arquivos válidos: `in1.txt`, `in2.txt` e `in3.txt`.
 
-Também é possível invocar o programa diretamente e inserir os valores manualmente, através de da linha de comando, com o comando `python main.py`.
+Também é possível invocar o programa diretamente e inserir os valores manualmente, através de da linha de comando, com o comando `python tp1.py`.
 
 ```
 Insira o valor de N: 90
@@ -115,8 +115,8 @@ As 4 funções principais executadas são:
 
 Os arquivos do código-fonte são:
 
-- base.py, discrete_log.py, factorization.py, mod.py, primality.py, util.py: módulos essenciais da aplicação.
-- main.py: código principal da aplicação.
+- base.py, discrete_log.py, factorization.py, modular_arithmetic.py, primality.py, util.py: módulos essenciais da aplicação.
+- tp1.py: código principal da aplicação.
 - tp_test.py: casos de teste dos módulos essenciais.
 - generator.cpp: código-fonte para gerar primos grandes para os casos de teste
 - test/*.txt: listas de testes usadas por tp_test.py e para os testes manuais.
