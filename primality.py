@@ -29,12 +29,13 @@ def miller_test(n:int, b:int, k: int, q: int):
         if r == n - 1: return True
     return False
 
-def prime_miller_rabin(n:int, primes:list[int]=[2], rep:int=None):
+def prime_miller_rabin(n:int, primes:list[int]=None, rep:int=None):
     '''Executa `rep` iterações com bases aleatórias do teste de Miller 
     para checar se n é primo. Returna True se o número provavelmente é primo,
     e False caso seja certamente composto.
     Complexidade de tempo: O(rep * log²(n))'''
     n = abs(n)
+    primes = primes or [2]
     if n < 2: return False
     if n == 2: return True
     if n in primes: return True

@@ -15,28 +15,28 @@ def invmod(a:int, n:int) -> int:
         return 0
     return alfa % n
 
-def congruence_system(a: list[int], n: list[int]) -> int:
+def congruence_system(A: list[int], n: list[int]) -> int:
     '''
     Usa o Algoritmo Chinês do Resto para calcular o resultado do 
-    sistema de congruências x = a[i] mod n[i], 0 <= i < len(a).
-    O resultado é dado em mod prod(n). Complexidade: O(S * log(a[k])),
-    onde S é o tamanho dos vetores a e n, e k é o índice de n onde n[k]
+    sistema de congruências x = A[i] mod n[i], 0 <= i < len(A).
+    O resultado é dado em mod prod(n). Complexidade: O(S * log(A[k])),
+    onde S é o tamanho dos vetores A e n, e k é o índice de n onde n[k]
     é máximo.'''
-    if len(a) != len(n): raise ValueError("Called congruence_system() with different-sized lists.")
+    if len(A) != len(n): raise ValueError("Called congruence_system() with different-sized lists.")
     N = prod(n)
     result = 0
-    for i in range(len(a)):
+    for i, a in enumerate(A):
         p = N // n[i]
         x = invmod(p, n[i])
-        result += a[i] * x * p
+        result += a * x * p
     return result % N
 
 def powmod(b:int, e:int, n:int) -> int:
     '''Retorna b^e mod n usando exponenciação binária. 
     Complexidade: O(log(n)).
     Exemplo: powmod(2, 5, 7) => 4'''
-    if abs(n) < 2: raise ValueError(f'n must be an integer with abs(n) > 1.')
-    if e < 0: 
+    if abs(n) < 2: raise ValueError('n must be an integer with abs(n) > 1.')
+    if e < 0:
         b, e = invmod(b, n), -e
     A, P, E = b, 1, e
     while E != 0:
@@ -87,6 +87,7 @@ def find_non_square(p: int) -> int:
     '''Encontra um inteiro que não é resíduo quadrático módulo p (p primo).'''
     for i in range(2, p):
         if not is_square(i, p): return i
+    raise ValueError("Failed to find non-quadratic residue.")
 
 def msqrt(a: int, p:int,  d: int) -> int:
     '''Calcula uma raiz quadrada modular de a mod p, onde p é primo e p > 2.
@@ -115,7 +116,6 @@ def find_generator(n:int, phi:int, f:dict[int,int], timeout:int=15) -> int:
                 break
         else:
             return g
-    else:
-        print(f"Elemento de maior ordem encontrado: g'={h}")
-        print(f"Ordem de g':", order(h, n, phi, f))
-        error(f"Tempo excedido: não foi possível encontrar um gerador. Limite de tempo: {timeout}")
+    print(f"Elemento de maior ordem encontrado: g'={h}")
+    print("Ordem de g':", order(h, n, phi, f))
+    error(f"Tempo excedido: não foi possível encontrar um gerador. Limite de tempo: {timeout}")

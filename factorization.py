@@ -57,15 +57,14 @@ def pollard_rho_factor(n: int, timeout:int=15) -> int:
             H = p(p(H)) % n
             d = gcd(T - H, n)
             if 1 < d < n: return d
-            elif d == n:
+            if d == n:
                 # restart the process with different inputs
                 x = randint(0, n - 1)		 				# arbitrary starting value for x
                 c = [randint(0, n - 1) for _ in range(3)]	# arbitrary coefficients
                 break
-    else:
-        error(f"Tempo excedido: não foi possível encontrar um fator de n - 1. Tempo máximo: {timeout}")
+    error(f"Tempo excedido: não foi possível encontrar um fator de n - 1. Tempo máximo: {timeout}")
 
-def pollard_rho_prime_power_decomposition(n: int, primes:list[int]=[], count=1) -> Counter[int, int]:
+def pollard_rho_prime_power_decomposition(n: int, primes:list[int]=None, count=1) -> Counter[int, int]:
     '''
     Usa o algoritmo Pollard's rho para encontrar a decomposição em potências de
     primos de n.
@@ -74,6 +73,7 @@ def pollard_rho_prime_power_decomposition(n: int, primes:list[int]=[], count=1) 
     Exemplo: pollard_rho_prime_power_decomposition(40) => {2: 3, 5: 1}
     '''
     if n == 1: return Counter()
+    primes = primes or []
     if prime_miller_rabin(n): return Counter({n: count})
     for p in primes:
         if n % p == 0:
@@ -92,7 +92,7 @@ def quadratic_sieve_limits(n: int) -> tuple[int, int]:
     order = ilog10(n)
     if order > 120:
         raise ValueError(f"No implementation available for numbers of order greater than 10^120 digits. n has order 10^{order}.")
-    for key, limits in QSIEVE_DICT:
+    for key, limits in QSIEVE_DICT.items():
         if order <= key:
             return limits
 

@@ -58,11 +58,11 @@ def poly(*coefficients: list[int]):
     f(-1) => 2
     '''
     def p(x: int):
-        eval = coefficients[0]
+        acc = coefficients[0]
         for c in coefficients[1:]:
-            eval *= x
-            eval += c
-        return eval
+            acc *= x
+            acc += c
+        return acc
     return p
 
 def oddify(n:int) -> tuple[int, int]:

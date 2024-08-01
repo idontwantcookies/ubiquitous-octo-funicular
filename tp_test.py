@@ -179,8 +179,8 @@ def test_pohlig_hellman():
 
 
 def test_pohlig_hellman_prime_power():
-    g, h, p, e, ord = 27, 40, 2, 3, 41
-    assert pohlig_hellman_prime_power_order(g, h, p, e, ord) == 4
+    g, h, p, e, o = 27, 40, 2, 3, 41
+    assert pohlig_hellman_prime_power_order(g, h, p, e, o) == 4
 
 
 def test_poly():

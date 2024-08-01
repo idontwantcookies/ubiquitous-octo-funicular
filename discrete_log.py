@@ -27,8 +27,8 @@ def baby_step_giant_step(g:int, h:int, n:int, order:int, timeout:int=15) -> int:
         y = (h * powmod(c, i, n)) % n
         if y in powers:
             j = powers[y]
-            return (i * m + j)
-    raise ValueError(f"Baby-step, giant-step failed: g does not generate n.")
+            return i * m + j
+    raise ValueError("Baby-step, giant-step failed: g does not generate n.")
 
 def pohlig_hellman_prime_power_order(g:int, h:int, p:int, e:int, n:int) -> int:
     """Computa o logaritmo discreto x tal que g^x = h mod n, onde g gera um
