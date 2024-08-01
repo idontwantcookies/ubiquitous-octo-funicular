@@ -8,6 +8,17 @@ from util import error
 from modular_arithmetic import is_square, find_non_square, msqrt
 
 
+QSIEVE_DICT = {
+    50: (3, 0.2),
+    60: (4, 2),
+    70: (7, 5),
+    80: (15, 6),
+    90: (30, 8),
+    100: (51, 14),
+    110: (120, 16),
+    120: (245, 26)
+}
+
 def totient(x:int, f:dict[int,int]) -> int:
     '''
     Calcula o totiente de x, phi, tal que a^phi = 1 mod x para qualquer a.
@@ -75,9 +86,20 @@ def pollard_rho_prime_power_decomposition(n: int, primes:list[int]=[], count=1) 
     y_factors = pollard_rho_prime_power_decomposition(y, primes, count)
     return x_factors + y_factors
 
-def quadratic_sieve(n: int, primes: list[int]):
-    digits = ilog10(n)
-    
+def quadratic_sieve_limits(n: int) -> tuple[int, int]:
+    '''Retorna os limites C, M do crivo quadrático, onde C é o tamanho máximo de um primo da lista,
+    e M é o tamanho máximo do vetor a ser criado, de acordo com a ordem de grandeza de n.'''
+    order = ilog10(n)
+    if order > 120:
+        raise ValueError(f"No implementation available for numbers of order greater than 10^120 digits. n has order 10^{order}.")
+    for key, limits in QSIEVE_DICT:
+        if order <= key:
+            return limits
+
+def quadratic_sieve(n: int, primes: list[int] = None):
+    '''Implementação do crivo quadrático baseada em
+    https://www.dcc.ufrj.br/~collier/CursosGrad/topicos/CrivoQuadratico.html'''
+    M, C = quadratic_sieve_limits(n)
     P = [(-1,0), (2,1)]
     L = primes[-1]
     for p in primes[2:]:

@@ -8,8 +8,7 @@ def random_prime(bits:int=1024, max_attempts:int=1000):
     for _ in range(max_attempts):
         p = randint(0, 2**bits) | 1
         if prime_miller_rabin(p): return p
-    else:
-        raise ValueError("Failed to generate prime.")
+    raise ValueError("Failed to generate prime.")
 
 
 def generate_keys(bits:int=1024) -> tuple[int, int, int]:

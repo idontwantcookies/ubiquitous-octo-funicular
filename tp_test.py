@@ -49,13 +49,13 @@ with open("test/primes.txt") as file:
 def test_isqrt(n, r):
     assert isqrt(n) == r
 
-@pytest.mark.parametrize("n,primes", [
+@pytest.mark.parametrize("n,P", [
     [10, [2, 3, 5, 7]],
     [30, [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]],
     [5, [2, 3, 5]]
 ])
-def test_erastosthenes_sieve(n, primes):
-    assert eratosthenes_sieve(n) == primes
+def test_erastosthenes_sieve(n, P):
+    assert eratosthenes_sieve(n) == P
 
 @pytest.mark.parametrize("n,s,t", [
     [2, 1, 1],
@@ -179,8 +179,8 @@ def test_pohlig_hellman():
 
 
 def test_pohlig_hellman_prime_power():
-    g, h, p, e, order = 27, 40, 2, 3, 41
-    assert pohlig_hellman_prime_power_order(g, h, p, e, order) == 4
+    g, h, p, e, ord = 27, 40, 2, 3, 41
+    assert pohlig_hellman_prime_power_order(g, h, p, e, ord) == 4
 
 
 def test_poly():
@@ -210,16 +210,19 @@ def test_congruence_system():
     x = congruence_system(a, n)
     assert x == 23
 
-def test_is_generator():
-    assert is_generator(4, 5, 4, {5:1}) == False
+@pytest.mark.parametrize("b,n,phi,F,expected", [
+    [4, 5, 4, {2:2}, False],
+    [2, 5, 4, {2:2}, True]
+])
+def test_is_generator(b, n, phi, F, expected):
+    assert is_generator(b, n, phi, F) == expected
 
-@pytest.mark.parametrize("g,n,phi,f,o",[
+@pytest.mark.parametrize("g,n,phi,F,o",[
     [2, 7, 6, {2:1, 3:1}, 3],
     [3, 7, 6, {2:1, 3:1}, 6],
     [3, 121, 110, {11:1, 2:1, 5:1}, 5],
     [5, 12, 4, {2:2}, 2],
     [13, 40, 12, {2:2, 3:1}, 4]
 ])
-def test_order(g, n, phi, f, o):
-    assert order(g, n, phi, f) == o
-
+def test_order(g, n, phi, F, o):
+    assert order(g, n, phi, F) == o

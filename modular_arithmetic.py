@@ -10,8 +10,8 @@ def invmod(a:int, n:int) -> int:
     `gcd_extended()`.
     Exemplo: invmod(2, 7) => 4'''
     if -2 < n < 2: return 0
-    gcd, alfa, _beta = gcd_extended(a, n)
-    if gcd != 1:
+    d, alfa, _beta = gcd_extended(a, n)
+    if d != 1:
         return 0
     return alfa % n
 
@@ -70,7 +70,7 @@ def subgroup(b:int, n:int, phi:int) -> list[int]:
 
 def is_generator(g:int, n:int, phi:int, factors:dict[int, int]):
     '''Retorna True caso g gere o conjunto Zn, de tamanho phi, ou False, caso
-    contrário. É preciso passar os fatores de n e suas respectivas potências
+    contrário. É preciso passar os fatores de phi e suas respectivas potências
     em formato de dicionário.'''
     if gcd(g, n) != 1: return False
     for p in factors.keys():
