@@ -66,12 +66,11 @@ def poly(*coefficients: list[int]):
     return p
 
 def oddify(n:int) -> tuple[int, int]:
-    '''Retorna k, q tais que n - 1 = 2^k * q, com q ímpar.
+    '''Retorna k, q tais que n = 2^k * q, com q ímpar.
     Complexidade:O(log(n)).
     Exemplo: oddify(41) => (3, 5)
     '''
-    # Retorna k,q tais que n - 1 = 2^k * q, q ímpar. Complexidade de tempo: O(log(n))
-    q = n - 1
+    q = n
     k = 0
     while q % 2 == 0:
         q >>= 1

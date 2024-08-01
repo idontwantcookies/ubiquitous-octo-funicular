@@ -40,7 +40,7 @@ def prime_miller_rabin(n:int, primes:list[int]=[2], rep:int=None):
     if n in primes: return True
     if n < primes[-1]: return False
     rep = rep or max(10, ilog10(n) + 1)
-    k, q = oddify(n)
+    k, q = oddify(n - 1)
     for _ in range(rep):
         b = randint(2, n - 1)
         if not miller_test(n, b, k, q): return False
@@ -52,14 +52,14 @@ def eratosthenes_sieve(n: int) -> list[int]:
     todos os primos no intervalo fechado [2,n].
     Complexidade de tempo: O(n * log(log(n)).
     '''
-    l = [True] * max(n, 2)
+    L = [True] * max(n + 1, 2)
     out = []
-    l[0], l[1] = False, False
+    L[0], L[1] = False, False
     max_i = isqrt(n) + 1
     for i in range(2, max_i):
-        if l[i]:
-            for j in range(i**2, n, i):
-                l[j] = False
-    for i, prime in enumerate(l):
+        if L[i]:
+            for j in range(i**2, n + 1, i):
+                L[j] = False
+    for i, prime in enumerate(L):
         if prime: out.append(i)
     return out
