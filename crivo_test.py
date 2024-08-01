@@ -30,3 +30,28 @@ def test_erastosthenes_sieve(n, primes):
 ])
 def test_oddify(n, s, t):
     assert crivo.oddify(n) == (s, t)
+
+
+@pytest.mark.parametrize("n,p,sq", [
+    [4, 13, True],
+    [2, 5, False],
+    [3, 11, True]
+])
+def test_is_square(n, p, sq):
+    assert crivo.is_square(n, p) == sq
+
+@pytest.mark.parametrize("p", [13, 11, 7, 5, 3])
+def test_find_non_square(p):
+    x = crivo.find_non_square(p)
+    for i in range(2, p):
+        assert (i * i) % p != x
+
+@pytest.mark.parametrize("a,p,d", [
+    [2, 7, 3],
+    [4, 7, 3],
+    [5, 11, 2],
+    [5, 11, 2],
+])
+def test_msqrt(a, p, d):
+    sq = crivo.msqrt(a, p, d)
+    assert (sq * sq) % p == a

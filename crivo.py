@@ -62,7 +62,6 @@ def msqrt(a: int, p:int,  d: int) -> int:
             m += pow(2,j-1)
     return (pow(a, (t+1)//2, p) * pow(D, m//2, p)) % p
 
-
 def crivo_quadratico(n: int, primes: list[int]):
     P = [(-1,0), (2,1)]
     L = primes[-1]
@@ -72,4 +71,3 @@ def crivo_quadratico(n: int, primes: list[int]):
         t = msqrt(n, p, d)
         L.append((p, t))
     r = isqrt(n)
-
