@@ -1,21 +1,8 @@
 from random import randint
 
-from base import isqrt, gcd, ilog10
-from mod import powmod
+from base import isqrt, gcd, ilog10, oddify
+from mod import powmod, is_square, msqrt
 
-
-def pre_miller(n:int) -> tuple[int, int]:
-    '''Retorna k, q tais que n - 1 = 2^k * q, com q ímpar.
-    Complexidade:O(log(n)).
-    Exemplo: pre_miller(41) => (3, 5)
-    '''
-    # Retorna k,q tais que n - 1 = 2^k * q, q ímpar. Complexidade de tempo: O(log(n))
-    q = n - 1
-    k = 0
-    while q % 2 == 0:
-        q >>= 1
-        k += 1
-    return k, q
 
 def miller_test(n:int, b:int, k: int, q: int):
     '''Usa o teste de Miller para testar se um número é primo.
@@ -53,7 +40,7 @@ def prime_miller_rabin(n:int, primes:list[int]=[2], rep:int=None):
     if n in primes: return True
     if n < primes[-1]: return False
     rep = rep or max(10, ilog10(n) + 1)
-    k, q = pre_miller(n)
+    k, q = oddify(n)
     for _ in range(rep):
         b = randint(2, n - 1)
         if not miller_test(n, b, k, q): return False

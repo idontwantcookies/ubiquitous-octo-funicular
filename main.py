@@ -1,6 +1,6 @@
 from base import ilog10
 from util import Timer
-from factorization import factors
+from factorization import pollard_rho_prime_power_decomposition
 from primality import eratosthenes_sieve, prime_miller_rabin
 from mod import find_generator
 from discrete_log import pohlig_hellman
@@ -22,7 +22,7 @@ with Timer():
 phi = n - 1
 
 with Timer():
-    f = factors(phi, sieve)
+    f = pollard_rho_prime_power_decomposition(phi, sieve)
     print("Decomposição de n - 1 em primos:", f)
 
 with Timer():

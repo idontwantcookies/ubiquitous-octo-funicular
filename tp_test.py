@@ -4,7 +4,7 @@ import sympy
 from base import isqrt, gcd_extended, poly
 from mod import powmod, find_generator, congruence_system, order, invmod
 from primality import prime_miller_rabin
-from factorization import pollard_rho_factor, factors
+from factorization import pollard_rho_factor, pollard_rho_prime_power_decomposition
 from discrete_log import baby_step_giant_step, pohlig_hellman, pohlig_hellman_prime_power_order
 
 
@@ -148,7 +148,7 @@ def test_pollard_rho(n):
     [100, {2: 2, 5: 2}]
 ])
 def test_factors(n, f):
-    assert factors(n) == f
+    assert pollard_rho_prime_power_decomposition(n) == f
 
 
 def test_congruence_system():

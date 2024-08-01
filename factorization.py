@@ -2,9 +2,10 @@ from collections import Counter
 from time import time
 from random import randint
 
-from base import poly, gcd
+from base import poly, gcd, isqrt
 from primality import prime_miller_rabin
 from util import error
+from mod import is_square, find_non_square, msqrt
 
 
 def totient(x:int, f:dict[int,int]) -> int:
@@ -53,13 +54,13 @@ def pollard_rho_factor(n: int, timeout:int=15) -> int:
     else:
         error(f"Tempo excedido: não foi possível encontrar um fator de n - 1. Tempo máximo: {timeout}")
 
-def factors(n: int, primes:list[int]=[], count=1) -> Counter[int, int]:
+def pollard_rho_prime_power_decomposition(n: int, primes:list[int]=[], count=1) -> Counter[int, int]:
     '''
     Usa o algoritmo Pollard's rho para encontrar a decomposição em potências de
     primos de n.
     Complexidade: O(r * sqrt(p)), onde r é o número de fatores primos de n, e p
     é o maior fator primo de n.
-    Exemplo: factors(40) => {2: 3, 5: 1}
+    Exemplo: pollard_rho_prime_power_decomposition(40) => {2: 3, 5: 1}
     '''
     if n == 1: return Counter()
     if prime_miller_rabin(n): return Counter({n: count})
@@ -70,6 +71,16 @@ def factors(n: int, primes:list[int]=[], count=1) -> Counter[int, int]:
     else:
         x = pollard_rho_factor(n)
     y, i = factor_out(n, x)
-    x_factors = factors(x, primes, count + i - 1)
-    y_factors = factors(y, primes, count)
+    x_factors = pollard_rho_prime_power_decomposition(x, primes, count + i - 1)
+    y_factors = pollard_rho_prime_power_decomposition(y, primes, count)
     return x_factors + y_factors
+
+def crivo_quadratico(n: int, primes: list[int]):
+    P = [(-1,0), (2,1)]
+    L = primes[-1]
+    for p in primes[2:]:
+        if not is_square(n, p): continue
+        d = find_non_square(p)
+        t = msqrt(n, p, d)
+        L.append((p, t))
+    r = isqrt(n)

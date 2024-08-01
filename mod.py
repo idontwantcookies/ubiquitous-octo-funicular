@@ -1,7 +1,7 @@
 from time import time
 from random import randint
 
-from base import prod, gcd_extended, gcd
+from base import prod, gcd_extended, gcd, oddify
 from util import error
 
 
@@ -72,6 +72,28 @@ def is_generator(g:int, n:int, phi:int, f:dict[int, int]):
         k = (phi) // p
         if powmod(g, k, n) == 1: return False
     return True
+
+def is_square(n: int, p: int) -> bool:
+    '''Verifica se n é um resíduo quadrático módulo p (p primo) usando 
+    o símbolo de Legendre.'''
+    return pow(n, (p - 1) // 2, p) == 1
+
+def find_non_square(p: int) -> int:
+    '''Encontra um inteiro que não é resíduo quadrático módulo p (p primo).'''
+    for i in range(2, p):
+        if not is_square(i, p): return i
+
+def msqrt(a: int, p:int,  d: int) -> int:
+    '''Calcula a raiz quadrada modular de a mod p, onde p é primo e p > 2.
+    d é um inteiro qualquer que não é resíduo quadrático.'''
+    m = 0
+    s, t = oddify(p - 1)
+    A = pow(a, t, p)
+    D = pow(d, t, p)
+    for j in range(1, s + 1):
+        if pow(A * pow(D,m,p), pow(2, s-1-j, p), p) == -1:
+            m += pow(2,j-1)
+    return (pow(a, (t+1)//2, p) * pow(D, m//2, p)) % p
 
 def find_generator(n:int, phi:int, f:dict[int,int], timeout:int=15) -> int:
     '''Algoritmo probabilístico para achar um gerador g do grupo de inteiros
