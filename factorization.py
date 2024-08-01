@@ -3,7 +3,7 @@ from time import time
 from random import randint
 
 from base import poly, gcd, isqrt, ilog10
-from primality import prime_miller_rabin
+from primality import prime_miller_rabin, eratosthenes_sieve
 from util import error
 from modular_arithmetic import is_square, find_non_square, msqrt
 
@@ -97,14 +97,18 @@ def quadratic_sieve_limits(n: int) -> tuple[int, int]:
             return limits
 
 def quadratic_sieve(n: int, primes: list[int] = None):
-    '''Implementação do crivo quadrático baseada em
+    '''Implementação do crivo quadrático baseada no algoritmo de S. C. Coutinho em
     https://www.dcc.ufrj.br/~collier/CursosGrad/topicos/CrivoQuadratico.html'''
-    M, C = quadratic_sieve_limits(n)
+    if not primes:
+        M, C = quadratic_sieve_limits(n)
+        primes = eratosthenes_sieve(n, M, C)
+    else:
+        M = len(primes)
+        C = primes[-1]
     P = [(-1,0), (2,1)]
     L = primes[-1]
     for p in primes[2:]:
         if not is_square(n, p): continue
         d = find_non_square(p)
-        t = msqrt(n, p, d)
-        L.append((p, t))
+        L.append((p, msqrt(n, p, d)))
     r = isqrt(n)
