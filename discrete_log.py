@@ -2,7 +2,7 @@ from time import time
 
 from base import isqrt
 from modular_arithmetic import powmod, congruence_system
-from util import error
+from util import error, Powers
 
 
 def baby_step_giant_step(g:int, h:int, n:int, order:int, timeout:int=15) -> int:
@@ -49,7 +49,7 @@ def pohlig_hellman_prime_power_order(g:int, h:int, p:int, e:int, n:int) -> int:
         x += d_k * p**k
     return x
 
-def pohlig_hellman(g: int, h:int, n:int, f:dict[int, int]) -> int:
+def pohlig_hellman(g: int, h:int, n:int, f:Powers) -> int:
     '''Resolve o problema do logaritmo discreto g^x = h mod n, usando o 
     método de Pohlig-Hellman. Dada a decomposição em primos p1^e1..pr^er,
     a complexidade desse algoritmo é O(r * sqrt(p)), onde p é o maior fator 

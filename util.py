@@ -3,6 +3,8 @@
 
 from time import time
 
+Powers = dict[int, int]
+
 class Timer:
     def __enter__(self):
         self.start = time()

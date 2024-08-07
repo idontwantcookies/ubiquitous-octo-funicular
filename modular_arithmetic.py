@@ -2,8 +2,7 @@ from time import time
 from random import randint
 
 from base import prod, gcd_extended, gcd, oddify
-from util import error
-
+from util import error, Powers
 
 def invmod(a:int, n:int) -> int:
     '''Retorna b tal que a * b = 1 mod n. Complexidade: a mesma de
@@ -46,7 +45,7 @@ def powmod(b:int, e:int, n:int) -> int:
         A = (A * A) % n
     return P
 
-def order(g:int, n:int, phi:int, f:dict[int, int]) -> int:
+def order(g:int, n:int, phi:int, f:Powers) -> int:
     '''Calcula a ordem de g mod n, conhecendo phi = totient(n) e a fatorização
     f de phi, phi = p1^e1*p2^e2*p3^e3..p_k^e_k. Complexidade: O(k * e_t), onde 
     e_t é o maior expoente da decomposição de phi em primos.'''
@@ -68,7 +67,7 @@ def subgroup(b:int, n:int, phi:int) -> list[int]:
         if pi == 1: break
     return powers
 
-def is_generator(g:int, n:int, phi:int, factors:dict[int, int]):
+def is_generator(g:int, n:int, phi:int, factors:Powers):
     '''Retorna True caso g gere o conjunto Zn, de tamanho phi, ou False, caso
     contrário. É preciso passar os fatores de phi e suas respectivas potências
     em formato de dicionário.'''

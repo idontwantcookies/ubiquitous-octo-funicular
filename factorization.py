@@ -4,9 +4,9 @@ from random import randint
 
 from base import poly, gcd, isqrt, ilog10
 from primality import prime_miller_rabin, eratosthenes_sieve
-from util import error
+from util import error, Powers
 from modular_arithmetic import is_square, find_non_square, msqrt
-
+from linalg import solve_mod_2, Matrix, Vector
 
 QSIEVE_DICT = {
     50: (3, 0.2),
@@ -38,7 +38,7 @@ def factor_out(n: int, p: int) -> tuple[int, int]:
         alpha += 1
     return u, alpha
 
-def factor_with_limited_primes(n: int, primes: list[int]) -> dict[int, int]:
+def factor_with_limited_primes(n: int, primes: list[int]) -> Powers:
     '''Retorna u, {p1: alpha1, p2:alpha2, ..., pk:alphak} tais que
     k é o tamanho da lista de primos passada, e
     n = p1^alpha1 * p2^alpha2 * ... * pk^alphak * u
@@ -46,12 +46,12 @@ def factor_with_limited_primes(n: int, primes: list[int]) -> dict[int, int]:
     primo na lista `primes`.'''
     if n == 0: raise ValueError("n cannot be zero.")
     u, powers = n, {}
+    powers[-1] = 1 if n < 0 else 0
+    u = abs(u)
     for p in primes:
-        u, alpha = factor_out(n, p)
+        u, alpha = factor_out(u, p)
         powers[p] = alpha
-    powers[-1] = 0 if n > 0 else 1
-    return u, powers
-
+    return powers, u
 
 def pollard_rho_factor(n: int, timeout:int=15) -> int:
     '''Usa o algoritmo Pollard's rho para encontrar um fator de n.
@@ -128,18 +128,18 @@ def quadratic_sieve_limits(n: int) -> tuple[int, int]:
 #         if not is_square(n, p): continue
 #         d = find_non_square(p)
 #         P[p] = msqrt(n, p, d)
-    
+#
 #     squares = {}
 #     x0 = isqrt(n)
 #     for i in range(M + 1):
-#         decomposition = {-1: 0}
+#         multiplicities = {-1: 0}
 #         xj = x0 + i
 #         u = xj * xj - n
 #         for p in primes[1:]:
 #             alpha, u = factor_out(u, p)
-#             decomposition[p] = alpha
+#             multiplicities[p] = alpha
 
-def quadratic_sieve_aux(n: int, xj: int, A: dict[int, int], primes: list[int]):
+def quadratic_sieve_aux(n: int, xj: int, A: dict[int, tuple[Powers, int]], primes: list[int]):
     '''Função auxiliar para o sivo quadrático. Ela recebe um número grande n que se deseja fatorar,
     um inteiro qualquer xj, e decompõe xj²-n em potências de primos presentes em `primes`,
     tal que
@@ -151,6 +151,13 @@ def quadratic_sieve_aux(n: int, xj: int, A: dict[int, int], primes: list[int]):
     if isqrt(u)**2 == u:
         A[xj] = (decomp, u)
     return A
+
+def build_linear_system(multiplicities: dict[int, tuple[Powers, int]]) -> tuple[Matrix, Vector]:
+    A, b = [], []
+    for xj, (powers, u) in multiplicities.items():
+        A.append(powers.keys())
+        b.append(0)
+    return A, b
 
 def naive_quadratic_sieve(n: int, primes: list[int]) -> int:
     A = {}

@@ -1,5 +1,3 @@
-from typing import TypeAlias
-
 Vector = list[int]
 Matrix = list[Vector]
 
