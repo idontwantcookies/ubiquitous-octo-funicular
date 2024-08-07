@@ -1,4 +1,4 @@
-import linalg
+from src import linalg
 
 def test_vector_mod():
     v = [6, 1, 4, 2]

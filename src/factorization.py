@@ -2,11 +2,11 @@ from collections import Counter
 from time import time
 from random import randint
 
-from base import poly, gcd, isqrt, ilog10
-from primality import prime_miller_rabin, eratosthenes_sieve
-from util import error, Powers
-from modular_arithmetic import is_square, find_non_square, msqrt
-from linalg import solve_mod_2, Matrix, Vector
+from src.base import poly, gcd, isqrt, ilog10
+from src.primality import prime_miller_rabin, eratosthenes_sieve
+from src.util import error, Powers
+from src.modular_arithmetic import is_square, find_non_square, msqrt
+from src.linalg import solve_mod_2, Matrix, Vector
 
 QSIEVE_DICT = {
     50: (3, 0.2),

@@ -1,6 +1,6 @@
 import pytest
 
-import base
+from src import base
 from tests.big_numbers import extgcd
 
 

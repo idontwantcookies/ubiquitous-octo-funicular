@@ -1,4 +1,4 @@
-import factorization
+from src import factorization
 
 import pytest
 

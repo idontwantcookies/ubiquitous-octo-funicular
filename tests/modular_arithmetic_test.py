@@ -1,7 +1,7 @@
 import pytest
 import sympy
 
-import modular_arithmetic
+from src import modular_arithmetic
 from tests.big_numbers import modular_inverse, fastexp
 
 @pytest.mark.parametrize("n,p,sq", [

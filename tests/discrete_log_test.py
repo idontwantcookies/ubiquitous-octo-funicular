@@ -1,6 +1,6 @@
 import pytest
 
-import discrete_log
+from src import discrete_log
 from tests.big_numbers import bsgs
 
 

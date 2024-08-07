@@ -1,8 +1,8 @@
 from time import time
 
-from base import isqrt
-from modular_arithmetic import powmod, congruence_system
-from util import error, Powers
+from src.base import isqrt
+from src.modular_arithmetic import powmod, congruence_system
+from src.util import error, Powers
 
 
 def baby_step_giant_step(g:int, h:int, n:int, order:int, timeout:int=15) -> int:

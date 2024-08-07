@@ -1,8 +1,8 @@
 from time import time
 from random import randint
 
-from base import prod, gcd_extended, gcd, oddify
-from util import error, Powers
+from src.base import prod, gcd_extended, gcd, oddify
+from src.util import error, Powers
 
 def invmod(a:int, n:int) -> int:
     '''Retorna b tal que a * b = 1 mod n. Complexidade: a mesma de

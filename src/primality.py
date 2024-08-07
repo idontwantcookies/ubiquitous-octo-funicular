@@ -1,8 +1,8 @@
 from random import randint
 from collections import defaultdict
 
-from base import gcd, ilog10, oddify
-from modular_arithmetic import powmod
+from src.base import gcd, ilog10, oddify
+from src.modular_arithmetic import powmod
 
 
 def miller_test(n:int, b:int, k: int, q: int):

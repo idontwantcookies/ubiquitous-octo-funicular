@@ -1,6 +1,6 @@
 import pytest
 
-import primality
+from src import primality
 from big_numbers import primes
 
 

@@ -1,9 +1,9 @@
-from base import ilog10
-from util import Timer
-from factorization import pollard_rho_prime_power_decomposition
-from primality import eratosthenes_sieve, prime_miller_rabin
-from modular_arithmetic import find_generator
-from discrete_log import pohlig_hellman
+from src.base import ilog10
+from src.util import Timer
+from src.factorization import pollard_rho_prime_power_decomposition
+from src.primality import eratosthenes_sieve, prime_miller_rabin
+from src.modular_arithmetic import find_generator
+from src.discrete_log import pohlig_hellman
 
 
 n = (int(input("Insira o valor de N: ")) + 1) | 1  # garantindo que seja ímpar
