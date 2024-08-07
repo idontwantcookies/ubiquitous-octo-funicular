@@ -6,6 +6,7 @@ from modular_arithmetic import powmod, find_generator, congruence_system, order,
 from primality import prime_miller_rabin, eratosthenes_sieve
 from factorization import pollard_rho_factor, pollard_rho_prime_power_decomposition, totient
 from discrete_log import baby_step_giant_step, pohlig_hellman, pohlig_hellman_prime_power_order
+from linalg import sum_vectors, echelon_mod_2, find_pivot, matrix_mod, swap, solve_mod_2, vector_mod, transpose, matrix_prod, naive_vector_prod
 
 
 extgcd = []
@@ -226,3 +227,81 @@ def test_is_generator(b, n, phi, F, expected):
 ])
 def test_order(g, n, phi, F, o):
     assert order(g, n, phi, F) == o
+
+def test_vector_mod():
+    v = [6, 1, 4, 2]
+    vector_mod(v, 3)
+    assert vector_mod(v, 3) == [0, 1, 1, 2]
+
+def test_add_vectors_mod():
+    u = [10, 5, 7, 13, 19]
+    v = [-3, -9, 4, 0, 12]
+    assert sum_vectors(u, v) == [7, -4, 11, 13, 31]
+
+def test_find_pivot():
+    A = [[0, 3, 7],
+         [0, 0, 1],
+         [1, 0, 3],
+         [0, 1, 7]]
+    assert find_pivot(A, 0) == 2
+    assert find_pivot(A, 1) == 3
+    assert find_pivot(A, 2) == 2
+
+def test_find_pivot2():
+    A = [[0, 0, 3, 0],
+         [0, 0, 0, 1],
+         [0, 1, 0, 2]]
+    assert find_pivot(A, 1) == 2
+    assert find_pivot(A, 3) == 3
+
+def test_matrix_mod():
+    A = [[2, 10],
+         [4, 13]]
+    matrix_mod(A, 7)
+    assert A == [[2, 3],
+                 [4, 6]]
+
+def test_swap():
+    v = [1, 2, 3, 4, 5]
+    swap(v, 0, 3)
+    assert v == [4, 2, 3, 1, 5]
+
+def test_transpose():
+    A = [[0, 3, 7, 4],
+         [0, 0, 1, 2],
+         [1, 0, 3, 11]]
+    assert transpose(A) == [[0, 0, 1],
+                            [3, 0, 0],
+                            [7, 1, 3],
+                            [4, 2, 11]]
+
+def test_matrix_prod():
+    A = [[1, 2, 3],
+         [4, 5, 6]]
+    B = [[1, 2],
+         [3, 4],
+         [5, 6]]
+    assert matrix_prod(A, B) == [[22, 28],
+                                 [49, 64]]
+
+def test_naive_vector_prod():
+    u = [1, 2, 3]
+    v = [9, 8, 7]
+    assert naive_vector_prod(u, v) == [9, 16, 21]
+
+def test_echelon_mod_2():
+    A = [[7, 3, 2],
+         [3, 9, 1]]
+    b = [3, 1]
+    A, b = echelon_mod_2(A, b)
+    assert A == [[1, 1, 0],
+                 [0, 0, 1]]
+    assert b == [1, 0]
+
+def test_solve_mod_2():
+    A = [[7, 3, 2],
+         [3, 9, 1],
+         [1, 6, 9]]
+    b = [3, 1, 10]
+    assert solve_mod_2(A, b) == [1, 0, 0]
+

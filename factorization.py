@@ -30,14 +30,28 @@ def totient(x:int, f:dict[int,int]) -> int:
         phi = phi * (p - 1) // p
     return phi
 
-def factor_out(n: int, p: int) -> int:
-    ''' Divides n by p until n is no longer divisible by p. Returns x, c, where x is n with  p 
-    factored out, and c is the exponent of p in prime-decomposition of n.'''
-    c = 0
-    while n % p == 0:
-        n //= p
-        c += 1
-    return n, c
+def factor_out(n: int, p: int) -> tuple[int, int]:
+    ''' Retorna u, alpha tais que n = p^alpha * u'''
+    u, alpha = n, 0
+    while u % p == 0:
+        u //= p
+        alpha += 1
+    return u, alpha
+
+def factor_with_limited_primes(n: int, primes: list[int]) -> dict[int, int]:
+    '''Retorna u, {p1: alpha1, p2:alpha2, ..., pk:alphak} tais que
+    k é o tamanho da lista de primos passada, e
+    n = p1^alpha1 * p2^alpha2 * ... * pk^alphak * u
+    onde u é um número cuja fatoração em potências de primos não possui nenhum
+    primo na lista `primes`.'''
+    if n == 0: raise ValueError("n cannot be zero.")
+    u, powers = n, {}
+    for p in primes:
+        u, alpha = factor_out(n, p)
+        powers[p] = alpha
+    powers[-1] = 0 if n > 0 else 1
+    return u, powers
+
 
 def pollard_rho_factor(n: int, timeout:int=15) -> int:
     '''Usa o algoritmo Pollard's rho para encontrar um fator de n.
@@ -96,19 +110,54 @@ def quadratic_sieve_limits(n: int) -> tuple[int, int]:
         if order <= key:
             return limits
 
-def quadratic_sieve(n: int, primes: list[int] = None):
-    '''Implementação do crivo quadrático baseada no algoritmo de S. C. Coutinho em
-    https://www.dcc.ufrj.br/~collier/CursosGrad/topicos/CrivoQuadratico.html'''
-    if not primes:
-        M, C = quadratic_sieve_limits(n)
-        primes = eratosthenes_sieve(n, M, C)
-    else:
-        M = len(primes)
-        C = primes[-1]
-    P = [(-1,0), (2,1)]
-    L = primes[-1]
-    for p in primes[2:]:
-        if not is_square(n, p): continue
-        d = find_non_square(p)
-        L.append((p, msqrt(n, p, d)))
-    r = isqrt(n)
+# def quadratic_sieve(n: int, primes: list[int] = None):
+#     '''Implementação do crivo quadrático baseada no algoritmo de S. C. Coutinho em
+#     https://www.dcc.ufrj.br/~collier/CursosGrad/topicos/CrivoQuadratico.html'''
+#     # Setando valores de M, C
+#     if not primes:
+#         M, C = quadratic_sieve_limits(n)
+#         primes = eratosthenes_sieve(n, M, C)
+#     else:
+#         M = len(primes)
+#         C = primes[-1]
+#     # Inicializando variáveis e vetores
+#     P = {-1: 0, 2: 1}
+#     L = primes[-1]
+#     # Construindo o vetor P de pares de primos (p=t², t) mod n, com p primo.
+#     for p in primes[2:]:
+#         if not is_square(n, p): continue
+#         d = find_non_square(p)
+#         P[p] = msqrt(n, p, d)
+    
+#     squares = {}
+#     x0 = isqrt(n)
+#     for i in range(M + 1):
+#         decomposition = {-1: 0}
+#         xj = x0 + i
+#         u = xj * xj - n
+#         for p in primes[1:]:
+#             alpha, u = factor_out(u, p)
+#             decomposition[p] = alpha
+
+def quadratic_sieve_aux(n: int, xj: int, A: dict[int, int], primes: list[int]):
+    '''Função auxiliar para o sivo quadrático. Ela recebe um número grande n que se deseja fatorar,
+    um inteiro qualquer xj, e decompõe xj²-n em potências de primos presentes em `primes`,
+    tal que
+    primes = [p1, p2, ..., pk]
+    xj²-n ≡ p1^alpha1 * p2^alpha2 * ... * pk^alphak * u,
+    onde u não pode ser decomposto em primos pertecentes a `primes`.
+    Se u for um quadrado perfeito, então a decomposição é adicionada ao dicionário A.'''
+    decomp, u = factor_with_limited_primes((xj**2 - n) % n, primes)
+    if isqrt(u)**2 == u:
+        A[xj] = (decomp, u)
+    return A
+
+def naive_quadratic_sieve(n: int, primes: list[int]) -> int:
+    A = {}
+    x0, j = isqrt(n) + 1, 0
+    while len(A) < len(primes) + 2:
+        quadratic_sieve_aux(n, x0 + j, A, primes)
+        quadratic_sieve_aux(n, x0 - j, A, primes)
+        j += 1
+        if x0 + j > n: raise RuntimeError("Could not find a factor for n. Maybe try again with more primes?")
+    # TODO: Implementar decomposição LU para resolver o sistema

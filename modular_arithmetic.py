@@ -78,10 +78,10 @@ def is_generator(g:int, n:int, phi:int, factors:dict[int, int]):
         if powmod(g, k, n) == 1: return False
     return True
 
-def is_square(n: int, p: int) -> bool:
-    '''Verifica se n é um resíduo quadrático módulo p (p primo) usando 
-    o símbolo de Legendre.'''
-    return pow(n, (p - 1) // 2, p) == 1
+def is_square(a: int, p: int) -> bool:
+    '''Verifica se a é um resíduo quadrático módulo p usando o símbolo de Legendre.
+    p deve ser um número primo.'''
+    return pow(a, (p - 1) // 2, p) == 1
 
 def find_non_square(p: int) -> int:
     '''Encontra um inteiro que não é resíduo quadrático módulo p (p primo).'''
