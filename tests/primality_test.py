@@ -1,7 +1,7 @@
 import pytest
 
 from src import primality
-from big_numbers import primes
+from .big_numbers import primes
 
 
 @pytest.mark.parametrize("n,P", [

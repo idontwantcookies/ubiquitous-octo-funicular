@@ -8,5 +8,5 @@ test: src/*.py
 	coverage run -m pytest
 	coverage html
 
-lint: src/*.py
-	pylint src/*.py
+lint: **/*.py
+	pylint **/*.py

@@ -1,7 +1,7 @@
-from src import factorization
-
 import pytest
 
+
+from src import factorization
 
 @pytest.mark.parametrize("x,factors,phi", [
     [48, {2:4, 3:1}, 16],
