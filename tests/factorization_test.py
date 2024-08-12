@@ -16,13 +16,14 @@ def test_pollard_rho(n):
     y = n // x
     assert x * y == n
 
-@pytest.mark.parametrize("n,f", [
-    [12, {2: 2, 3: 1}],
-    [717967279050961, {12657973: 1, 56720557: 1}],
-    [100, {2: 2, 5: 2}]
+@pytest.mark.parametrize("n,primes,f", [
+    [12, None, {2: 2, 3: 1}],
+    [717967279050961, None, {12657973: 1, 56720557: 1}],
+    [100, None, {2: 2, 5: 2}],
+    [15, [2, 3, 5], {3: 1, 5: 1}]
 ])
-def test_factors(n, f):
-    assert factorization.pollard_rho_prime_power_decomposition(n) == f
+def test_factors(n, primes, f):
+    assert factorization.pollard_rho_prime_power_decomposition(n, primes) == f
 
 @pytest.mark.parametrize("n,p,u,alpha", [
     [51, 3, 17, 1],

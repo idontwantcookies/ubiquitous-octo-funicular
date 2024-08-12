@@ -48,21 +48,16 @@ def prime_miller_rabin(n:int, primes:list[int]=None, rep:int=None):
         if not miller_test(n, b, k, q): return False
     return True
 
-def eratosthenes_sieve(n: int, M: int = None, C: int = None) -> list[int]:
+def eratosthenes_sieve(n: int) -> list[int]:
     '''
     Usa o crivo de Eratóstenes para retornar uma lista com 
-    todos os primos no intervalo fechado [2,n].
-    Pode-se limitar o tamanho da lista com o parâmetro M, ou o tamanho do maior
-    primo com o parâmetro C.
+    todos os primos no intervalo fechado [0,n].
     Complexidade de tempo: O(n * log(log(n)).
     '''
     L = defaultdict(lambda: True)
     L[0], L[1] = False, False
     primes = []
-    M = M or n
-    C = C or n
     for i in range(n + 1):
-        if len(primes) > M or i > C: break
         if L[i]:
             primes.append(i)
             for j in range(i**2, n + 1, i):

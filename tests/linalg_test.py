@@ -1,5 +1,10 @@
 from src import linalg
 
+def test_vectorize():
+    mod5 = linalg.vectorize(lambda x: x % 5)
+    assert mod5([4, 8, 2, 7, 11, 23]) == [4, 3, 2, 2, 1, 3]
+    assert mod5([[11, 17], [-4, 10]]) == [[1, 2], [1, 0]]
+
 def test_vector_mod():
     v = [6, 1, 4, 2]
     linalg.vector_mod(v, 3)
@@ -16,7 +21,7 @@ def test_find_pivot():
          [1, 0, 3],
          [0, 1, 7]]
     assert linalg.find_pivot(A, 0) == 2
-    assert linalg.find_pivot(A, 1) == 3
+    assert linalg.find_pivot(A, 1) == -1
     assert linalg.find_pivot(A, 2) == 2
 
 def test_find_pivot2():
@@ -24,7 +29,7 @@ def test_find_pivot2():
          [0, 0, 0, 1],
          [0, 1, 0, 2]]
     assert linalg.find_pivot(A, 1) == 2
-    assert linalg.find_pivot(A, 3) == 3
+    assert linalg.find_pivot(A, 3) == -1
 
 def test_matrix_mod():
     A = [[2, 10],
@@ -54,12 +59,29 @@ def test_matrix_prod():
          [3, 4],
          [5, 6]]
     assert linalg.matrix_prod(A, B) == [[22, 28],
-                                 [49, 64]]
+                                        [49, 64]]
 
 def test_naive_vector_prod():
     u = [1, 2, 3]
     v = [9, 8, 7]
     assert linalg.naive_vector_prod(u, v) == [9, 16, 21]
+
+def test_rref():
+    A = [[5, 2, 3],
+         [2, 4, 1],
+         [1, 0, 1]]
+    assert linalg.rref(A) == [[5, 2, 3], [0.0, 3.2, -0.20000000000000018], [0.0, 0.0, 0.3749999999999999]]
+
+def test_rref_assimetric1():
+    A = [[5, 2],
+         [2, 4],
+         [1, 0]]
+    assert linalg.rref(A) == [[5, 2], [0.0, 3.2], [0.0, 0.0]]
+
+def test_rref_assimetric2():
+    A = [[5, 2, 3],
+         [2, 4, 1]]
+    assert linalg.rref(A) == [[5, 2, 3], [0.0, 3.2, -0.20000000000000018]]
 
 def test_echelon_mod_2():
     A = [[7, 3, 2],
