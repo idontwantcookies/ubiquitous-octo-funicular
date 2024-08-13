@@ -34,7 +34,9 @@ def factor_with_limited_primes(n: int, primes: list[int]) -> Powers:
     primo na lista `primes`.'''
     if n == 0: raise ValueError("n cannot be zero.")
     u, powers = n, {}
-    powers[-1] = 1 if n < 0 else 0
+    if -1 in primes:
+        powers[-1] = 1 if n < 0 else 0
+        primes = primes[1:]
     u = abs(u)
     for p in primes:
         u, alpha = factor_out(u, p)

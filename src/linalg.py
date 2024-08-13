@@ -2,6 +2,8 @@ from collections.abc import Iterable
 from numbers import Number
 from typing import Callable
 
+import sympy
+
 
 Vector = list[Number]
 Matrix = list[Vector]
@@ -23,8 +25,10 @@ def vector_mod(v: Vector, p: int) -> Vector:
     return u
 
 def matrix_mod(A: Matrix, p: int):
+    A = A.copy()
     for i, row in enumerate(A):
         A[i] = vector_mod(row, p)
+    return A
 
 def swap(A: list, i: int, j: int):
     A[i], A[j] = A[j], A[i]
@@ -36,12 +40,11 @@ def find_pivot(A: Matrix, j: int) -> int:
     if i in (m, n): return -1
     return i
 
-def sum_vectors(u: Vector, v: Vector) -> Vector:
-    if len(u) != len(v): raise ValueError("Vectors' length must be the same.")
-    w = []
-    for x, y in zip(u, v):
-        w.append(x + y)
-    return w
+def sum_vectors(*vectors: list[Vector]) -> Vector:
+    acc = []
+    for row in zip(*vectors):
+        acc.append(sum(row))
+    return acc
 
 def scale_vector(u: Vector, alpha: Number) -> Vector:
     w = []
@@ -93,31 +96,7 @@ def rref(A: Matrix) -> Matrix:
             A[j] = gauss_reduce_row(A[j], pivot_row, i)
     return A
 
-def echelon_mod_2(A: Matrix, b: Vector):
-    A = A.copy()
-    matrix_mod(A, 2)
-    b = vector_mod(b, 2)
-    n = len(A)
-    for i in range(n):
-        p = find_pivot(A, i)
-        if p == -1: continue
-        if A[p][p] == 0: continue
-        swap(A, i, p)
-        swap(b, i, p)
-        for j in range(i + 1, n):
-            if j > len(A): break
-            if A[j][i] == 0: continue
-            A[j][i:] = sum_vectors(A[i][i:], A[j][i:])
-            A[j][i:] = vector_mod(A[j][i:], 2)
-            b[j] = (b[i] + b[j]) % 2
-    return A, b
-
-def solve_mod_2(A: Matrix, b: Vector):
-    A, b = echelon_mod_2(A, b)
-    A = transpose(A)
-    A, b = echelon_mod_2(A, b)
-    return b
-
-def kernel(A: Matrix):
-    # TODO
-    pass
+def kernel(A: sympy.Matrix | Matrix) -> Matrix:
+    A = sympy.Matrix(A)
+    ker: list[sympy.Matrix] = A.nullspace()
+    return [list(u.transpose()) for u in ker]

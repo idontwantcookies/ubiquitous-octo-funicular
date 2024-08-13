@@ -34,8 +34,8 @@ def test_factor_out(n, p, u, alpha):
     assert factorization.factor_out(n, p) == (u, alpha)
 
 @pytest.mark.parametrize("n,primes,powers,u", [
-    [2**3 * 3**2 * 11**3 * 13 * 17, [2, 3, 5, 7, 11], {-1:0, 2:3, 3:2, 5:0, 7:0, 11:3}, 13*17],
-    [-22, [2, 3, 5], {-1:1, 2:1, 3:0, 5:0}, 11]
+    [2**3 * 3**2 * 11**3 * 13 * 17, [-1, 2, 3, 5, 7, 11], {-1:0, 2:3, 3:2, 5:0, 7:0, 11:3}, 13*17],
+    [-22, [-1, 2, 3, 5], {-1:1, 2:1, 3:0, 5:0}, 11]
 ])
 def test_factor_with_limited_primes(n, primes, powers, u):
     assert factorization.factor_with_limited_primes(n, primes) == (powers, u)

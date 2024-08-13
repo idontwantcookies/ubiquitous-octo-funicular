@@ -1,5 +1,4 @@
 # pylint: skip-file
-# coverage:
 
 from time import time
 

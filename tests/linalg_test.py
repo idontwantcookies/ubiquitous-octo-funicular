@@ -1,3 +1,5 @@
+import pytest
+
 from src import linalg
 
 def test_vectorize():
@@ -10,7 +12,7 @@ def test_vector_mod():
     linalg.vector_mod(v, 3)
     assert linalg.vector_mod(v, 3) == [0, 1, 1, 2]
 
-def test_add_vectors_mod():
+def test_add_vectors():
     u = [10, 5, 7, 13, 19]
     v = [-3, -9, 4, 0, 12]
     assert linalg.sum_vectors(u, v) == [7, -4, 11, 13, 31]
@@ -34,9 +36,8 @@ def test_find_pivot2():
 def test_matrix_mod():
     A = [[2, 10],
          [4, 13]]
-    linalg.matrix_mod(A, 7)
-    assert A == [[2, 3],
-                 [4, 6]]
+    assert linalg.matrix_mod(A, 7) == [[2, 3],
+                                       [4, 6]]
 
 def test_swap():
     v = [1, 2, 3, 4, 5]
@@ -66,35 +67,21 @@ def test_naive_vector_prod():
     v = [9, 8, 7]
     assert linalg.naive_vector_prod(u, v) == [9, 16, 21]
 
-def test_rref():
-    A = [[5, 2, 3],
-         [2, 4, 1],
-         [1, 0, 1]]
-    assert linalg.rref(A) == [[5, 2, 3], [0.0, 3.2, -0.20000000000000018], [0.0, 0.0, 0.3749999999999999]]
 
-def test_rref_assimetric1():
-    A = [[5, 2],
-         [2, 4],
-         [1, 0]]
-    assert linalg.rref(A) == [[5, 2], [0.0, 3.2], [0.0, 0.0]]
-
-def test_rref_assimetric2():
-    A = [[5, 2, 3],
-         [2, 4, 1]]
-    assert linalg.rref(A) == [[5, 2, 3], [0.0, 3.2, -0.20000000000000018]]
-
-def test_echelon_mod_2():
-    A = [[7, 3, 2],
-         [3, 9, 1]]
-    b = [3, 1]
-    A, b = linalg.echelon_mod_2(A, b)
-    assert A == [[1, 1, 0],
-                 [0, 0, 1]]
-    assert b == [1, 0]
-
-def test_solve_mod_2():
-    A = [[7, 3, 2],
-         [3, 9, 1],
-         [1, 6, 9]]
-    b = [3, 1, 10]
-    assert linalg.solve_mod_2(A, b) == [1, 0, 0]
+@pytest.mark.parametrize('A,A_reduced', [
+    [[[5, 2, 3],
+      [2, 4, 1],
+      [1, 0, 1]], [[5, 2, 3],
+                   [0.0, 3.2, -0.20000000000000018],
+                   [0.0, 0.0, 0.3749999999999999]]],
+    [[[5, 2],
+      [2, 4],
+      [1, 0]], [[5, 2],
+                [0.0, 3.2],
+                [0.0, 0.0]]],
+    [[[5, 2, 3],
+      [2, 4, 1]], [[5, 2, 3],
+                   [0.0, 3.2, -0.20000000000000018]]]
+])
+def test_rref(A, A_reduced):
+    assert linalg.rref(A) == A_reduced
