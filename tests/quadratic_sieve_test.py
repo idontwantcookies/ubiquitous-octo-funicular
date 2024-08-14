@@ -10,13 +10,12 @@ from src import quadratic_sieve as qs
 def test_kernel_solutions(ker, solutions):
     assert qs.kernel_solutions(ker) == solutions
 
-
 @pytest.mark.parametrize('n,B', [
-    [87463,42],
-    [3000, 18],
-    [100, 7],
-    [10, 3],
-    [3, 2]
+    [87463,43],
+    [3000, 19],
+    [100, 8],
+    [10, 4],
+    [3, 3]
 ])
 def test_find_B(n, B):
     assert qs.find_B(n) == B
@@ -31,7 +30,7 @@ def test_euler_sieve_method():
 
 def test_setup():
     B, M, primes = qs.setup(100)
-    assert (B, M) == (7, 9)
+    assert (B, M) == (8, 9)
     assert primes == [-1, 2, 3, 7]
 
 def test_build_matrix():
@@ -65,6 +64,8 @@ def test_quadratic_sieve_aux():
     qs.quadratic_sieve_aux(17, 5, S, [-1, 2, 3, 5])
     assert S == {5: {-1:0, 2: 3, 3: 0, 5: 0}}
 
-def test_quadratic_sieve():
-    n = 87463
-    assert qs.quadratic_sieve(n) == 0
+@pytest.mark.parametrize('n', [10, 50, 33, 100, 973, 1817, 2951, 8051, 87463, 10201030027])
+def test_quadratic_sieve(n):
+    d = qs.quadratic_sieve(n)
+    assert d not in (1, n)
+    assert n % d == 0

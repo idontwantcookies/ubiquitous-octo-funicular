@@ -13,7 +13,7 @@ from src.util import Powers
 def find_B(n: int) -> int:
     '''Retorna o limite B do crivo quadrático, onde B é o tamanho máximo de um primo.
     Fonte: https://risencrypto.github.io/QuadraticSieve/'''
-    return ceil(exp(sqrt(log(n) * log(log(n))))**(1/sqrt(2)))
+    return ceil(exp(sqrt(log(n) * log(log(n))))**(1/sqrt(2))) + 1
 
 def euler_sieve_method(n: int, primes: list[int]) -> list[int]:
     '''Criva os primos de acordo com o critério de Euler; ou seja, filtra a lista de primos
@@ -37,7 +37,7 @@ def quadratic_sieve_aux(n: int, xj: int, S: dict[int, Powers], primes: list[int]
     Se xj²-n for B-smooth, ou seja, pode ser perfeitamente decomposto em primos na lista finita `primes`,
      então a decomposição é adicionada ao dicionário S.'''
     if xj in S.keys(): return
-    decomp, u = factor_with_limited_primes(xj * xj - n, primes)
+    decomp, u = factor_with_limited_primes(xj * xj % n, primes)
     if u == 1:
         # Number is B-smooth
         S[xj] = decomp
@@ -103,25 +103,19 @@ def quadratic_sieve(n: int) -> int:
     S: OrderedDict[int, Powers] = OrderedDict()
     B, M, primes = setup(n)
     x0 = ceil(sqrt(n))
-    for j in range(M):
-        xj = x0 + j
-        if xj * xj == n: return xj
+    for xj in range(x0, n):
+        if n % xj == 0: return xj
         quadratic_sieve_aux(n, xj, S, primes)
-        xj = x0 - j
-        if xj * xj == n: return xj
-        quadratic_sieve_aux(n, x0 - j, S, primes)
-        # if len(S) > M: break
-    if len(S) < B:
-        raise RuntimeError('Could not find a factor for n. Failed to build a system of equations.')
+        if len(S) > M: break
+    if len(S) <= B:
+        raise RuntimeError('Não foi possível construir um sistema de equações para n.')
     A = build_matrix_of_powers(S, primes)
+    A = matrix_mod(A, 2)
     solutions = kernel_solutions(A)
     for sol in solutions:
         a, b = compose_from_solution(S, sol)
-        # assert (a**2) % n == b**2 % n
-        # assert y > 0
-        b = isqrt(y)
-        # assert b**2 == y
-        d = gcd(a - b, n)
+        assert (a**2) % n == b**2 % n
+        d = abs(gcd(a - b, n))
         if d not in (1, n):
             return d
-    raise RuntimeError('Could not find a factor for n. All solutions found were trivial.')
+    raise RuntimeError('Não foi possível encontrar um fator não-trivial para n.')
