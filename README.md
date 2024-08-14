@@ -2,10 +2,10 @@
 
 ## Autores
 
-Chrystian Paulo Ferreira de Melo
-Felipe Ribas Muniz
-João Marcos Rezende
-Sanny Cristiane Moreira de Sales
+- Chrystian Paulo Ferreira de Melo
+- Felipe Ribas Muniz
+- João Marcos Rezende
+- Sanny Cristiane Moreira de Sales
 
 ## Desenvolvimento do trabalho
 
@@ -21,17 +21,53 @@ Os testes foram usados com frequência para refatorar o código e realizar mudan
 
 O programa é constituído dos seguintes módulos:
 
-- `base`: Possui funções aritméticas simples, para o cálculo de raiz quadrada, logaritmo na base 10 e MDC, por exemplo.
-- `util`: funções úteis para medir tempo e para sair do programa em caso de erro / timeout.
-- `modular_arithmetic`: aqui situam-se funções fundamentais relativas à aritmética modular, como inverso modular, potenciação modular, subgrupo, etc. Além disso, aqui se encontra a função `find_generator` usada pelo programa na segunda etapa do algoritmo. O algoritmo estendido de Euclides (do módulo `base`) é usado com frequência nesse módulo.
-- `primality`: funções relacionadas a testes de primalidade, incluindo o teste de Miller-Rabin e o crivo de Eratóstenes. O teste de Miller-Rabin usa o módulo `base` para calcular log na base 10, e o crivo de Eratóstenes usa o mesmo módulo para calcular a raiz quadrada inteira.
-- `factorization`: como o próprio nome já diz, aqui se encontram as funções responsáveis por fatorar um número inteiro, incluindo a função totiente. A fatoração de n - 1, onde n é o primo encontrado na primeira etapa, é utilizada em diversos algoritmos subsequentes para acelerar os cálculos. A fatorização usa o teste de primalidade Miller-Rabin para checar se o número foi completamente fatorado.
-- `discrete_log`: algoritmos baby-step, giant-step e Pohlig-Hellman, usados para resolver o problema do logaritmo discreto na terceira etapa do programa. O cálculo do logaritmo discreto depende da fatoração feita pelo módulo `factorization`, além das funções de potenciação modular e a solução de congruências pelo Teorema Chinês do Resto, no módulo `modular_arithmetic`.
-- `tp1`: o script principal que recebe como entrada (N, h) para encontrar:
+### base
+
+Possui funções aritméticas simples, para o cálculo de raiz quadrada, logaritmo na base 10 e MDC, por exemplo.
+
+### util
+
+Funções úteis para medir tempo e para sair do programa em caso de erro / timeout.
+
+### modular_arithmetic
+
+Aqui situam-se funções fundamentais relativas à aritmética modular, como inverso modular, potenciação modular, subgrupo, etc. Além disso, aqui se encontra a função find_generator usada pelo programa na segunda etapa do algoritmo. O algoritmo estendido de Euclides (do módulo base) é usado com frequência nesse módulo.
+
+### primality
+
+Funções relacionadas a testes de primalidade, incluindo o teste de Miller-Rabin e o crivo de Eratóstenes. O teste de Miller-Rabin usa o módulo base para calcular log na base 10, e o crivo de Eratóstenes usa o mesmo módulo para calcular a raiz quadrada inteira.
+
+### factorization
+
+Como o próprio nome já diz, aqui se encontram as funções responsáveis por fatorar um número inteiro, incluindo a função totiente. A fatoração de n - 1, onde n é o primo encontrado na primeira etapa, é utilizada em diversos algoritmos subsequentes para acelerar os cálculos. A fatorização usa o teste de primalidade Miller-Rabin para checar se o número foi completamente fatorado.
+
+### discrete_log 
+
+Algoritmos baby-step, giant-step e Pohlig-Hellman, usados para resolver o problema do logaritmo discreto na terceira etapa do programa. O cálculo do logaritmo discreto depende da fatoração feita pelo módulo factorization, além das funções de potenciação modular e a solução de congruências pelo Teorema Chinês do Resto, no módulo modular_arithmetic.
+
+### linalg
+
+Operações em vetores e matrizes, como multiplicação de matrizes, redução à forma escalonada (RREF) e cálculo do kernel de uma matriz.
+
+### quadratic_sieve
+
+Implementação do crivo quadrático para fatoração de números grandes, usando resíduos quadráticos e álgebra linear para encontrar fatores não triviais.
+
+### rsa
+
+Sistema de criptografia RSA, incluindo funções para gerar chaves públicas e privadas e codificar e decodificar mensagens usando aritmética modular.
+### tp1
+
+Script principal que recebe como entrada (N, h) para encontrar:
     - o menor n primo tal que n > N;
     - a fatoração de n - 1;
     - um gerador g de Zn, ou um elemento com ordem alta;
     - o logaritmo discreto de h na base g mod n.
+
+### tp2
+Script principal para fatorar um número inteiro usando o crivo quadrático.
+
+Recebe como entrada o número n, e retorna um fator desse número.
 
 ## Como utilizar o programa
 
@@ -115,8 +151,8 @@ As 4 funções principais executadas são:
 
 Os arquivos do código-fonte são:
 
-- base.py, discrete_log.py, factorization.py, modular_arithmetic.py, primality.py, util.py: módulos essenciais da aplicação.
-- tp1.py: código principal da aplicação.
-- tp_test.py: casos de teste dos módulos essenciais.
+- src/ base.py, discrete_log.py, factorization.py, linalg.py, modular_arithmetic.py, primality.py, quadratic_sieve.py, rsa.py, util.py: módulos essenciais da aplicação.
+- tp2.py: código principal da aplicação.
+- tests/*.py: casos de teste dos módulos essenciais.
 - generator.cpp: código-fonte para gerar primos grandes para os casos de teste
-- test/*.txt: listas de testes usadas por tp_test.py e para os testes manuais.
+- big_numbers/*.txt: listas de testes usadas por tp_test.py e para os testes manuais.

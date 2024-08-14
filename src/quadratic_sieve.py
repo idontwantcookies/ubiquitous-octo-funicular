@@ -1,13 +1,14 @@
 from math import exp, sqrt, log, ceil
 from itertools import product
 from collections import OrderedDict, defaultdict
+from time import time
 
 from src.base import isqrt, gcd
 from src.factorization import factor_with_limited_primes
 from src.linalg import Matrix, Vector, transpose, kernel, sum_vectors, scale_vector, vector_mod, matrix_mod
 from src.modular_arithmetic import is_square, msqrt
 from src.primality import eratosthenes_sieve
-from src.util import Powers
+from src.util import Powers, error
 
 
 def find_B(n: int) -> int:
@@ -100,6 +101,7 @@ def compose_from_solution(S: OrderedDict[int, Powers], solution: list[int]) -> i
 def quadratic_sieve(n: int) -> int:
     '''Implementação do crivo quadrático baseada em Collier:
     https://www.dcc.ufrj.br/~collier/CursosGrad/topicos/CrivoQuadratico.html'''
+    start = time()
     S: OrderedDict[int, Powers] = OrderedDict()
     B, M, primes = setup(n)
     x0 = ceil(sqrt(n))
@@ -107,6 +109,8 @@ def quadratic_sieve(n: int) -> int:
         if n % xj == 0: return xj
         quadratic_sieve_aux(n, xj, S, primes)
         if len(S) > M: break
+        if time() - start > 15:
+            error("Tempo limite excedido. Não foi possível fatorar n.")
     if len(S) <= B:
         raise RuntimeError('Não foi possível construir um sistema de equações para n.')
     A = build_matrix_of_powers(S, primes)
@@ -118,4 +122,6 @@ def quadratic_sieve(n: int) -> int:
         d = abs(gcd(a - b, n))
         if d not in (1, n):
             return d
+        if time() - start > 15:
+            error("Tempo limite excedido. Não foi possível fatorar n.")
     raise RuntimeError('Não foi possível encontrar um fator não-trivial para n.')
