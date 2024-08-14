@@ -1,4 +1,4 @@
-# Problema do logaritmo discreto - TP1 de Álgebra A
+# Problema do logaritmo discreto - TP2 de Álgebra A
 
 ## Autores
 
