@@ -9,13 +9,15 @@
 
 ## Desenvolvimento do trabalho
 
-O trabalho foi desenvolvido em python 3.10. Para gerar os casos de teste do código, usamos a biblioteca GMP de C++ para determinar primos grandes, potências mod n, inversos modulares e testes de primalidade. O arquivo generator.cpp contém o código fonte responsável pelos casos de teste gerados, que foram então usados em python para testar o código do aplicativo de fato.
+Utilizamos Python 3.10 para desenvolvimento do trabalho, focando na implementação do Algoritmo do Crivo Quadrático para fatoração de números grandes. O programa lida com números que variam entre 3 e 45 algarismos e é capaz de realizar operações como fatoração de números, verificação de quadrados residuais e decomposição em potências de primos.
 
-Diversos casos de teste foram criados no arquivo `tp_test.py` em casos onde sabíamos a solução, geralmente para números menores do que aqueles gerados pelo GMP e em que foi possível fazer os cálculos na mão. A base do trabalho foi feita sobre o algoritmo estendido de Euclides para calcular o MDC e sobre o algoritmo de exponenciação binária. Com eles, somos capazes de gerar grupos em Zp, e de calcular inversos modulares. Além disso, o teste de primalidade de Miller-Rabin foi usado para encontrar um p grande.
+Quando o programa lê a entrada n, ele se dedica a fatorar números grandes usando o Algoritmo do Crivo Quadrático. O processo começa com a leitura e preparação do número n para fatoração. O coração do método é o Crivo Quadrático, que é eficaz para números grandes e complexos.
 
-Uma vez que essas 3 bases foram construídas, temos um p e um grupo Zp, onde todo elemento tem inverso multiplicativo. A partir dessa premissa, trabalhamos com o totiente de p, a fatorização do totiente em potências de primos usando o algoritmo Pohlard's rho, buscamos um gerador g para Zp, e, por fim, usamos Baby-Step, Giant-Step, combinado com Pohlig-Hellman, para calcular o logaritmo discreto de qualquer elemento h ∈ Zp na base g.
+Para fatorar n, o programa implementa um método de resolução de congruências quadráticas da forma x² ≡ n (modp), onde p é um número primo. Após resolver as congruências, o programa lida com a solução de sistemas de equações sobre Z2.
+​
+Dessa forma, o programa consegue fatorar n de maneira mais rápida que outros métodos mais ingênuos.
 
-Os testes foram usados com frequência para refatorar o código e realizar mudanças necessárias sempre que algum erro de lógica era encontrado, ou quando era necessário aprimorar a eficiência de um algoritmo. Eles podem não ser exaustivos; além disso, como alguns desses algoritmos são probabilísticos, os testes são instáveis, embora eles dificilmente falhem duas vezes consecutivas.
+Os testes foram concentrados na pasta tests, cobrindo todas as funcionalidades do programa e com uma cobertura média de 98%. Os testes foram usados com frequência para refatorar o código e realizar mudanças necessárias sempre que algum erro de lógica era encontrado, ou quando era necessário aprimorar a eficiência de um algoritmo. Eles podem não ser exaustivos. Além disso, como alguns desses algoritmos são probabilísticos, os testes são instáveis, embora eles dificilmente falhem duas vezes consecutivas.
 
 ## Módulos
 
