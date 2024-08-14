@@ -92,14 +92,12 @@ Fator encontrado para n:  587
 Tempo de execução: 0.999ms
 ```
 
-## Complexidade
-
-As 4 funções principais executadas são: 
-- `prime_miller_rabin()`, que tem complexidade O(rep * log²(n)). Como adotamos rep = log(n), a complexidade total é O(log³(n));
-- `factors()`, de complexidade O(log(n) * sqrt(p)), onde p é o maior fator primo de n - 1;
-- `find_generator()`, de complexidade O(log²(p))
-- `pohlig_hellman()`, de complexidade O(r * sqrt(p)), onde r é o número de fatores primos de n - 1 e p é o maior fator primo de n - 1.
-
+## Complexidade do Crivo Quadrático
+A complexidade temporal do crivo quadrático é subexponencial, especificamente O(e^sqrt(log N
+log log N)), onde N é o número a ser fatorado. <br>
+Isto significa que o tempo de execução cresce mais rapidamente que uma função polinomial,
+mas ainda é muito mais eficiente que algoritmos de fatoração que têm uma complexidade
+exponencial.
 
 ## Listagem do programa-fonte
 
